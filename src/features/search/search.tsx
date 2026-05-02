@@ -1,7 +1,11 @@
 import { Component, createRef, type ChangeEvent, type ReactNode } from 'react';
 import './search.css';
 
-export default class Search extends Component {
+type SearchProps = {
+  handleSearch: (searchItem: string) => void;
+};
+
+export default class Search extends Component<SearchProps> {
   inputRef = createRef<HTMLInputElement>();
 
   state = {
@@ -30,6 +34,7 @@ export default class Search extends Component {
     this.writeToLocalStorage(searchItem);
     this.setState({ searchItem });
     this.inputRef.current?.focus();
+    this.props.handleSearch(searchItem);
   };
 
   onChange = (event: ChangeEvent<HTMLInputElement>) => {
