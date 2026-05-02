@@ -7,36 +7,35 @@ import { getPokemon, getPokemons } from '../api/pokemon';
 
 type State = {
   pokemons: Pokemon[];
+  loading: boolean;
   limit: number;
   offset: number;
 };
 export default class HomePage extends Component {
   state: State = {
     pokemons: [],
+    loading: false,
     limit: 20,
     offset: 0,
   };
 
   handleSearch = async (searchItem: string): Promise<void> => {
     console.log(`search for (${searchItem})`);
+    this.setState({ loading: true, pokemons: [] });
+    let pokemons: Pokemon[];
     if (searchItem) {
-      const pokemon = await getPokemon(searchItem);
-      this.setState({
-        pokemons: [pokemon],
-      });
+      pokemons = [await getPokemon(searchItem)];
     } else {
-      const pokemons = await getPokemons(this.state.limit, this.state.offset);
-      this.setState({
-        pokemons,
-      });
+      pokemons = await getPokemons(this.state.limit, this.state.offset);
     }
+    this.setState({ loading: false, pokemons });
   };
 
   render(): ReactNode {
     return (
       <div id="home">
         <Search handleSearch={this.handleSearch} />
-        <Results pokemons={this.state.pokemons} />
+        <Results loading={this.state.loading} pokemons={this.state.pokemons} />
       </div>
     );
   }
