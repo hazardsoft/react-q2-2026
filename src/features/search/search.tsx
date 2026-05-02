@@ -43,9 +43,11 @@ export default class Search extends Component<SearchProps> {
   };
 
   componentDidMount(): void {
+    const initialSearchItem = this.readFromLocalStorage();
     this.setState({
-      searchItem: this.readFromLocalStorage(),
+      searchItem: initialSearchItem,
     });
+    this.props.handleSearch(initialSearchItem);
   }
 
   render(): ReactNode {
