@@ -11,6 +11,7 @@ type State = {
   error: string;
   limit: number;
   offset: number;
+  throw: boolean;
 };
 export default class HomePage extends Component {
   state: State = {
@@ -19,6 +20,7 @@ export default class HomePage extends Component {
     error: '',
     limit: 20,
     offset: 0,
+    throw: false,
   };
 
   handleSearch = async (searchItem: string): Promise<void> => {
@@ -40,6 +42,16 @@ export default class HomePage extends Component {
     }
   };
 
+  handlerError = () => {
+    this.setState({ throw: true });
+  };
+
+  componentDidUpdate(): void {
+    if (this.state.throw) {
+      throw new Error('Throw error manually');
+    }
+  }
+
   render(): ReactNode {
     return (
       <div id="home">
@@ -49,6 +61,7 @@ export default class HomePage extends Component {
           error={this.state.error}
           pokemons={this.state.pokemons}
         />
+        <button onClick={this.handlerError}>Throw Exception</button>
       </div>
     );
   }
