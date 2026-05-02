@@ -1,4 +1,4 @@
-import { Component, createRef, type ChangeEvent, type ReactNode } from 'react';
+import { Component, createRef, type ReactNode } from 'react';
 import './search.css';
 
 type SearchProps = {
@@ -31,15 +31,11 @@ export default class Search extends Component<SearchProps> {
 
   onSearch = (): void => {
     const searchItem = (this.inputRef.current?.value ?? '').trim();
+    if (this.state.searchItem === searchItem) return;
     this.writeToLocalStorage(searchItem);
     this.setState({ searchItem });
     this.inputRef.current?.focus();
     this.props.handleSearch(searchItem);
-  };
-
-  onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const searchItem = event.target.value.trim();
-    this.setState({ searchItem });
   };
 
   componentDidMount(): void {
@@ -47,17 +43,16 @@ export default class Search extends Component<SearchProps> {
     this.setState({
       searchItem: initialSearchItem,
     });
+    if (this.inputRef && this.inputRef.current) {
+      this.inputRef.current.value = initialSearchItem;
+    }
     this.props.handleSearch(initialSearchItem);
   }
 
   render(): ReactNode {
     return (
       <section id="search" className="search">
-        <input
-          ref={this.inputRef}
-          value={this.state.searchItem}
-          onChange={this.onChange}
-        ></input>
+        <input ref={this.inputRef}></input>
         <button onClick={this.onSearch}>Search</button>
       </section>
     );
