@@ -6,6 +6,7 @@ import Loading from './loading';
 type ResultsProps = {
   pokemons: Pokemon[];
   loading: boolean;
+  error: string;
 };
 
 export default class Results extends Component<ResultsProps> {
@@ -14,6 +15,7 @@ export default class Results extends Component<ResultsProps> {
       <section id="results" className="results">
         <Loading visible={this.props.loading} />
         <div>{this.props.pokemons.map((p) => p.name).join(', ')}</div>
+        {this.props.error && <p className="error">{this.props.error}</p>}
       </section>
     );
   }
