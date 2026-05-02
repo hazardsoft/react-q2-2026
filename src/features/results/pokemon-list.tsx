@@ -1,20 +1,23 @@
 import { Component, type ReactNode } from 'react';
-import './results.css';
+import './pokemon-list.css';
 import type { Pokemon } from '../../api/types';
 import Loading from './loading';
+import PokermonCard from './pokermon-card';
 
-type ResultsProps = {
+type PokemonListProps = {
   pokemons: Pokemon[];
   loading: boolean;
   error: string;
 };
 
-export default class Results extends Component<ResultsProps> {
+export default class PokemonList extends Component<PokemonListProps> {
   render(): ReactNode {
     return (
       <section id="results" className="results">
         <Loading visible={this.props.loading} />
-        <div>{this.props.pokemons.map((p) => p.name).join(', ')}</div>
+        {this.props.pokemons.map((p) => {
+          return <PokermonCard name={p.name} key={p.name}></PokermonCard>;
+        })}
         {this.props.error && <p className="error">{this.props.error}</p>}
       </section>
     );

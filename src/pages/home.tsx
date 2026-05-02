@@ -1,7 +1,7 @@
 import { Component, type ReactNode } from 'react';
 import './home.css';
 import Search from '../features/search/search';
-import Results from '../features/results/results';
+import PokemonList from '../features/results/pokemon-list';
 import type { Pokemon } from '../api/types';
 import { getPokemon, getPokemons } from '../api/pokemon';
 
@@ -56,7 +56,7 @@ export default class HomePage extends Component {
     return (
       <div id="home">
         <Search handleSearch={this.handleSearch} />
-        <Results
+        <PokemonList
           loading={this.state.loading}
           error={this.state.error}
           pokemons={this.state.pokemons}
