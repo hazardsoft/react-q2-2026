@@ -1,9 +1,9 @@
 import { Component, type ReactNode } from 'react';
 import './home.css';
 import Search from '../features/search/search';
-import PokemonList from '../features/results/pokemon-list';
 import type { Pokemon } from '../api/types';
 import { getPokemon, getPokemons } from '../api/pokemon';
+import Results from '../features/results/results';
 
 type State = {
   pokemons: Pokemon[];
@@ -24,7 +24,6 @@ export default class HomePage extends Component {
   };
 
   handleSearch = async (searchItem: string): Promise<void> => {
-    console.log(`search for (${searchItem})`);
     this.setState({ loading: true, error: '', pokemons: [] });
     let pokemons: Pokemon[];
     try {
@@ -56,12 +55,14 @@ export default class HomePage extends Component {
     return (
       <div id="home">
         <Search handleSearch={this.handleSearch} />
-        <PokemonList
+        <Results
           loading={this.state.loading}
           error={this.state.error}
           pokemons={this.state.pokemons}
         />
-        <button onClick={this.handlerError}>Throw Exception</button>
+        <button onClick={this.handlerError} className="error-button">
+          Throw Exception
+        </button>
       </div>
     );
   }

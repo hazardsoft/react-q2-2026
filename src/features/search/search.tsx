@@ -5,10 +5,14 @@ type SearchProps = {
   handleSearch: (searchItem: string) => void;
 };
 
+type SearchState = {
+  searchItem: string;
+};
+
 export default class Search extends Component<SearchProps> {
   inputRef = createRef<HTMLInputElement>();
 
-  state = {
+  state: SearchState = {
     searchItem: '',
   };
 
@@ -21,11 +25,10 @@ export default class Search extends Component<SearchProps> {
   };
 
   writeToLocalStorage = (value: string): void => {
-    if (!value) return;
     try {
       localStorage.setItem('searchItem', value);
     } catch {
-      /* empty */
+      /* empty */ 
     }
   };
 
@@ -43,7 +46,7 @@ export default class Search extends Component<SearchProps> {
     this.setState({
       searchItem: initialSearchItem,
     });
-    if (this.inputRef && this.inputRef.current) {
+    if (this.inputRef?.current) {
       this.inputRef.current.value = initialSearchItem;
     }
     this.props.handleSearch(initialSearchItem);
@@ -52,7 +55,7 @@ export default class Search extends Component<SearchProps> {
   render(): ReactNode {
     return (
       <section id="search" className="search">
-        <input ref={this.inputRef}></input>
+        <input id="name" type="search" ref={this.inputRef} placeholder="Pokemon's name"></input>
         <button onClick={this.onSearch}>Search</button>
       </section>
     );

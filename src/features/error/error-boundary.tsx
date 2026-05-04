@@ -1,11 +1,11 @@
-import React, { Component, type ErrorInfo, type HTMLAttributes } from 'react';
+import { Component, type ErrorInfo, type HTMLAttributes, type ReactNode } from 'react';
 
 type ErrorBoundaryState = {
   hasError: boolean;
 };
 
 interface ErrorBoundaryProps extends HTMLAttributes<HTMLDivElement> {
-  fallback: React.ReactNode;
+  fallback: ReactNode;
 }
 
 export default class ErrorBoundary extends Component<ErrorBoundaryProps> {
@@ -25,7 +25,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps> {
     );
   }
 
-  render(): React.ReactNode {
+  render(): ReactNode {
     if (this.state.hasError) {
       return this.props.fallback;
     }

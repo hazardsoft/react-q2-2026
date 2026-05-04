@@ -1,8 +1,6 @@
-.results {
+.pokemon-list {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  flex-grow: 1;
-}
-.error {
-  color: red;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
 }

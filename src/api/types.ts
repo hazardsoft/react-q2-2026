@@ -10,10 +10,14 @@ export type Ability = {
   };
 };
 
+export type PokemonSprites = {
+  front_default: string | null;
+};
+
 export type PokemonDetails = {
   id: number;
   name: string;
-  weight: number;
   abilities: Ability[];
+  sprites: PokemonSprites;
   url: string;
 };
