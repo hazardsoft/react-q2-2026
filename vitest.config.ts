@@ -5,9 +5,12 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: ['./src/__tests__/setup.ts'],
       coverage: {
         include: ['src/**/*.{ts,tsx}'],
-        exclude: ['src/**/*.spec.{ts,tsx}'],
+        exclude: ['src/**/*.spec.{ts,tsx}', 'src/__tests__/*.*'],
         thresholds: {
           statements: 80,
           branches: 50,
