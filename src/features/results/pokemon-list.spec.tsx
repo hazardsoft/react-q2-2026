@@ -1,22 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import PokemonList from './pokemon-list';
-import type { Pokemon } from '../../api/types';
-
-const pokemons: Pokemon[] = [
-  {
-    name: 'bulbasaur',
-    url: 'https://pokeapi.co/api/v2/pokemon/1/',
-  },
-  {
-    name: 'ivysaur',
-    url: 'https://pokeapi.co/api/v2/pokemon/2/',
-  },
-  {
-    name: 'venusaur',
-    url: 'https://pokeapi.co/api/v2/pokemon/3/',
-  },
-];
+import { pokemons } from '../../__tests__/data';
 
 describe('List: Rendering Tests', () => {
   it('Renders correct number of items when data is provided', async () => {

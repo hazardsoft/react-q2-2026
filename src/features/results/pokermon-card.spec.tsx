@@ -3,36 +3,13 @@ import { describe, expect, it, vi } from 'vitest';
 import PokermonCard from './pokermon-card';
 import { getPokemon } from '../../api/pokemon';
 import type { PokemonDetails } from '../../api/types';
+import { pokemon } from '../../__tests__/data';
 
 vi.mock('../../api/pokemon', () => {
   return {
     getPokemon: vi.fn(),
   };
 });
-
-const pokemon: PokemonDetails = {
-  id: 1,
-  name: 'bulbasaur',
-  url: 'https://pokeapi.co/api/v2/pokemon/1',
-  abilities: [
-    {
-      ability: {
-        name: 'overgrow',
-        url: 'https://pokeapi.co/api/v2/ability/65/',
-      },
-    },
-    {
-      ability: {
-        name: 'chlorophyll',
-        url: 'https://pokeapi.co/api/v2/ability/34/',
-      },
-    },
-  ],
-  sprites: {
-    front_default:
-      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
-  },
-};
 
 const pokemonWithoutAbilities: PokemonDetails = {
   id: 1,
