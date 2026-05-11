@@ -15,8 +15,11 @@ export default class Results extends Component<ResultsProps> {
     return (
       <section id="results">
         {this.props.loading && <Loading />}
-        {this.props.error && <p className="error">{this.props.error}</p>}
-        <PokemonList pokemons={this.props.pokemons} />
+        {this.props.error ? (
+          <p className="error">{this.props.error}</p>
+        ) : (
+          <PokemonList pokemons={this.props.pokemons} />
+        )}
       </section>
     );
   }
