@@ -1,5 +1,6 @@
 import { Component, createRef, type ReactNode } from 'react';
 import './search.css';
+import { readSearchItem, writeSearchItem } from '../../api/local';
 
 type SearchProps = {
   handleSearch: (searchItem: string) => void;
@@ -16,33 +17,17 @@ export default class Search extends Component<SearchProps> {
     searchItem: '',
   };
 
-  readFromLocalStorage = (): string => {
-    try {
-      return localStorage.getItem('searchItem') ?? '';
-    } catch {
-      return '';
-    }
-  };
-
-  writeToLocalStorage = (value: string): void => {
-    try {
-      localStorage.setItem('searchItem', value);
-    } catch {
-      /* empty */ 
-    }
-  };
-
   onSearch = (): void => {
     const searchItem = (this.inputRef.current?.value ?? '').trim();
     if (this.state.searchItem === searchItem) return;
-    this.writeToLocalStorage(searchItem);
+    writeSearchItem(searchItem);
     this.setState({ searchItem });
     this.inputRef.current?.focus();
     this.props.handleSearch(searchItem);
   };
 
   componentDidMount(): void {
-    const initialSearchItem = this.readFromLocalStorage();
+    const initialSearchItem = readSearchItem();
     this.setState({
       searchItem: initialSearchItem,
     });
@@ -55,7 +40,12 @@ export default class Search extends Component<SearchProps> {
   render(): ReactNode {
     return (
       <section id="search" className="search">
-        <input id="name" type="search" ref={this.inputRef} placeholder="Pokemon's name"></input>
+        <input
+          id="name"
+          type="search"
+          ref={this.inputRef}
+          placeholder="Pokemon's name"
+        ></input>
         <button onClick={this.onSearch}>Search</button>
       </section>
     );
