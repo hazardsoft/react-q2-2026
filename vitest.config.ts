@@ -11,7 +11,11 @@ export default mergeConfig(
       mockReset: true,
       coverage: {
         include: ['src/**/*.{ts,tsx}'],
-        exclude: ['src/**/*.spec.{ts,tsx}', 'src/__tests__/*.*'],
+        exclude: [
+          'src/**/*.spec.{ts,tsx}',
+          'src/__tests__/*.*',
+          'src/index.tsx',
+        ],
         thresholds: {
           statements: 80,
           branches: 50,

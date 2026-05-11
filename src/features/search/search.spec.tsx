@@ -86,4 +86,16 @@ describe('Search: User Interaction Tests', () => {
     expect(searchFn).toHaveBeenCalledTimes(2);
     expect(searchFn).toHaveBeenLastCalledWith(searchItem);
   });
+
+  it('Does not re-trigger search with the same search item', async () => {
+    const { user } = prepareComponent();
+
+    await user.type(screen.getByRole('searchbox'), searchItem);
+    await user.click(screen.getByRole('button', { name: 'Search' }));
+    await user.click(screen.getByRole('button', { name: 'Search' }));
+    await user.click(screen.getByRole('button', { name: 'Search' }));
+
+    expect(searchFn).toHaveBeenCalledTimes(2);
+    expect(searchFn).toHaveBeenLastCalledWith(searchItem);
+  });
 });
