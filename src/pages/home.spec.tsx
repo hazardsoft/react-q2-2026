@@ -4,8 +4,12 @@ import HomePage from './home';
 
 describe('Home', () => {
   it("Renders button with label 'Throw Exception'", async () => {
-    render(<HomePage />)
+    render(<HomePage />);
 
-    expect(screen.getByRole('button', { name: /Throw Exception/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Throw Exception/i })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Search/i })).toBeInTheDocument();
+    expect(screen.getByRole('searchbox')).toBeInTheDocument();
   });
 });
