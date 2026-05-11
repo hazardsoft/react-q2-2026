@@ -30,19 +30,22 @@ describe('App: Integration Tests', () => {
 
     render(<App />);
 
-    expect(vi.mocked(getPokemons)).not.toHaveBeenCalled();
-    expect(vi.mocked(getPokemon)).toHaveBeenCalled();
-    expect(vi.mocked(getPokemon)).toHaveBeenCalledWith(pokemon.name);
+    await waitFor(() => {
+      expect(vi.mocked(getPokemon)).toHaveBeenCalledWith(pokemon.name);
+      expect(vi.mocked(getPokemons)).not.toHaveBeenCalled();
+    });
   });
 
   it('Handle empty search item', async () => {
     vi.mocked(getPokemons).mockReturnValue(Promise.resolve(pokemons));
+    vi.mocked(getPokemon).mockReturnValue(Promise.resolve(pokemon));
 
     render(<App />);
 
-    expect(vi.mocked(getPokemons)).toHaveBeenCalled();
-    expect(vi.mocked(getPokemons)).toHaveBeenCalledWith(20, 0);
-    expect(vi.mocked(getPokemon)).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(vi.mocked(getPokemons)).toHaveBeenCalledWith(20, 0);
+      expect(vi.mocked(getPokemon)).not.toHaveBeenCalled();
+    });
   });
 
   it('Handles API error responses', async () => {
