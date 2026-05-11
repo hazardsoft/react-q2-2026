@@ -72,6 +72,7 @@ describe('Pokemon Card: Rendering Tests', () => {
       expect(vi.mocked(getPokemon)).toHaveBeenCalledWith(
         pokemonWithoutAbilities.name
       );
+      expect(vi.mocked(getPokemon)).toHaveReturned();
     });
 
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
