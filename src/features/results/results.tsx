@@ -14,7 +14,7 @@ export default class Results extends Component<ResultsProps> {
   render(): ReactNode {
     return (
       <section id="results">
-        <Loading visible={this.props.loading} />
+        {this.props.loading && <Loading />}
         {this.props.error && <p className="error">{this.props.error}</p>}
         <PokemonList pokemons={this.props.pokemons} />
       </section>

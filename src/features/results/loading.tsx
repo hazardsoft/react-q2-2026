@@ -1,14 +1,10 @@
 import { Component, type ReactNode } from 'react';
 import './loading.css';
 
-interface LoadingProps {
-  visible: boolean;
-}
-
-export default class Loading extends Component<LoadingProps> {
+export default class Loading extends Component {
   render(): ReactNode {
     return (
-      <div className="spinner" data-loading={this.props.visible}>
+      <div className="spinner" data-testid="spinner">
         <svg
           fill="hsl(228, 97%, 42%)"
           viewBox="0 0 24 24"

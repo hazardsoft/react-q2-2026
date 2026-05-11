@@ -10,10 +10,16 @@ type PokemonListProps = {
 export default class PokemonList extends Component<PokemonListProps> {
   render(): ReactNode {
     return (
-      <div className='pokemon-list'>
-        {this.props.pokemons.map((p) => {
-          return <PokermonCard name={p.name} key={p.name}></PokermonCard>;
-        })}
+      <div className="pokemon-list">
+        {this.props.pokemons.length > 0 ? (
+          <>
+            {this.props.pokemons.map((p) => {
+              return <PokermonCard name={p.name} key={p.name}></PokermonCard>;
+            })}
+          </>
+        ) : (
+          <p>No Pokemons</p>
+        )}
       </div>
     );
   }
