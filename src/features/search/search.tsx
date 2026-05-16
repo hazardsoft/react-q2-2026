@@ -1,4 +1,4 @@
-import { Component, createRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import './search.css';
 import { readSearchItem, writeSearchItem } from '../../api/local';
 
@@ -6,48 +6,40 @@ type SearchProps = {
   handleSearch: (searchItem: string) => void;
 };
 
-type SearchState = {
-  searchItem: string;
+const Search = ({ handleSearch }: SearchProps) => {
+  const [searchItem, setSearchItem] = useState(readSearchItem);
+  const [inputItem, setInputItem] = useState(readSearchItem);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setInputItem(event.target.value);
+  };
+
+  const onSearch = (): void => {
+    const trimmedInputItem = inputItem.trim();
+    if (trimmedInputItem === searchItem) return;
+    writeSearchItem(trimmedInputItem);
+    setSearchItem(trimmedInputItem);
+    inputRef.current?.focus();
+  };
+
+  useEffect(() => {
+    handleSearch(searchItem);
+  }, [handleSearch, searchItem]);
+
+  return (
+    <section id="search" className="search">
+      <input
+        id="name"
+        type="search"
+        placeholder="Pokemon's name"
+        ref={inputRef}
+        value={inputItem}
+        onChange={onChange}
+      ></input>
+      <button onClick={onSearch}>Search</button>
+    </section>
+  );
 };
 
-export default class Search extends Component<SearchProps> {
-  inputRef = createRef<HTMLInputElement>();
-
-  state: SearchState = {
-    searchItem: '',
-  };
-
-  onSearch = (): void => {
-    const searchItem = (this.inputRef.current?.value ?? '').trim();
-    if (this.state.searchItem === searchItem) return;
-    writeSearchItem(searchItem);
-    this.setState({ searchItem });
-    this.inputRef.current?.focus();
-    this.props.handleSearch(searchItem);
-  };
-
-  componentDidMount(): void {
-    const initialSearchItem = readSearchItem();
-    this.setState({
-      searchItem: initialSearchItem,
-    });
-    if (this.inputRef?.current) {
-      this.inputRef.current.value = initialSearchItem;
-    }
-    this.props.handleSearch(initialSearchItem);
-  }
-
-  render(): ReactNode {
-    return (
-      <section id="search" className="search">
-        <input
-          id="name"
-          type="search"
-          ref={this.inputRef}
-          placeholder="Pokemon's name"
-        ></input>
-        <button onClick={this.onSearch}>Search</button>
-      </section>
-    );
-  }
-}
+export default Search;
