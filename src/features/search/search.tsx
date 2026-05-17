@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import './search.css';
-import { readSearchItem, writeSearchItem } from '../../api/local';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 type SearchProps = {
   handleSearch: (searchItem: string) => void;
 };
 
 const Search = ({ handleSearch }: SearchProps) => {
-  const [searchItem, setSearchItem] = useState(readSearchItem);
-  const [inputItem, setInputItem] = useState(readSearchItem);
+  const [searchItem, setSearchItem] = useLocalStorage('searchItem');
+  const [inputItem, setInputItem] = useState(searchItem);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -18,7 +18,6 @@ const Search = ({ handleSearch }: SearchProps) => {
   const onSearch = (): void => {
     const trimmedInputItem = inputItem.trim();
     if (trimmedInputItem === searchItem) return;
-    writeSearchItem(trimmedInputItem);
     setSearchItem(trimmedInputItem);
     inputRef.current?.focus();
   };
