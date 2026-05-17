@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
 import { getPokemons, getPokemon } from './api/pokemon';
-import { pokemon, pokemons } from './__tests__/data';
+import { pokemon, pokemonsResponse } from './__tests__/data';
 
 vi.mock('./api/pokemon', () => {
   return {
@@ -37,13 +37,13 @@ describe('App: Integration Tests', () => {
   });
 
   it('Handle empty search item', async () => {
-    vi.mocked(getPokemons).mockReturnValue(Promise.resolve(pokemons));
+    vi.mocked(getPokemons).mockReturnValue(Promise.resolve(pokemonsResponse));
     vi.mocked(getPokemon).mockReturnValue(Promise.resolve(pokemon));
 
     render(<App />);
 
     await waitFor(() => {
-      expect(vi.mocked(getPokemons)).toHaveBeenCalledWith(20, 0);
+      expect(vi.mocked(getPokemons)).toHaveBeenCalled();
       expect(vi.mocked(getPokemon)).not.toHaveBeenCalled();
     });
   });

@@ -5,27 +5,27 @@ import { pokemons } from '../../__tests__/data';
 
 describe('Results: Rendering Tests', () => {
   it('Shows loading state while fetching data', async () => {
-    render(<Results pokemons={[]} loading={true} error="" />);
+    render(<Results pokemons={[]} loading={true} error="" pages={{}} />);
 
     expect(screen.getByTestId('spinner')).toBeInTheDocument();
     expect(screen.getByTestId('spinner')).toBeVisible();
   });
 
   it('Does not show loading state loading is not in progress', async () => {
-    render(<Results pokemons={[]} loading={false} error="" />);
+    render(<Results pokemons={[]} loading={false} error="" pages={{}} />);
 
     expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
   });
 
   it('Renders the pokemon list when there is no error and data is provided', async () => {
-    render(<Results pokemons={pokemons} loading={false} error="" />);
+    render(<Results pokemons={pokemons} loading={false} error="" pages={{}} />);
 
     expect(screen.getAllByRole('article').length).toBe(pokemons.length);
     expect(screen.queryByText('No Pokemons')).not.toBeInTheDocument();
   });
 
   it('Shows "No Pokemons" when there is no error and the list is empty', async () => {
-    render(<Results pokemons={[]} loading={false} error="" />);
+    render(<Results pokemons={[]} loading={false} error="" pages={{}} />);
 
     expect(screen.getByText('No Pokemons')).toBeInTheDocument();
   });
@@ -34,7 +34,9 @@ describe('Results: Rendering Tests', () => {
 describe('Results: Error Handling Tests', () => {
   it('Displays error message when API call fails', async () => {
     const errorMessage = 'Can not load pokemons';
-    render(<Results pokemons={[]} loading={false} error={errorMessage} />);
+    render(
+      <Results pokemons={[]} loading={false} error={errorMessage} pages={{}} />
+    );
 
     expect(screen.getByText(errorMessage)).toBeInTheDocument();
     expect(screen.queryByText('No Pokemons')).not.toBeInTheDocument();

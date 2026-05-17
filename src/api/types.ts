@@ -14,10 +14,8 @@ export type PokemonSprites = {
   front_default: string | null;
 };
 
-export type PokemonDetails = {
+export interface PokemonDetails extends Pokemon {
   id: number;
-  name: string;
   abilities: Ability[];
   sprites: PokemonSprites;
-  url: string;
-};
+}

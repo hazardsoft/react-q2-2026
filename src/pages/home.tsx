@@ -2,15 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 import './home.css';
 import Search from '../features/search/search';
 import type { Pokemon } from '../api/types';
-import { getPokemon, getPokemons } from '../api/pokemon';
-import Results from '../features/results/results';
+import { getPageIndex, getPokemon, getPokemons } from '../api/pokemon';
+import Results, { type ResultsProps } from '../features/results/results';
 
 const HomePage = () => {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
-  const [page] = useState<{ limit: number; offset: number }>({
-    limit: 20,
-    offset: 0,
-  });
+  const [pageIndex] = useState(0);
+  const [pages, setPages] = useState<ResultsProps['pages']>({});
   const [loading, setLoading] = useState(false);
   const [toThrow, setToThrow] = useState(false);
   const [error, setError] = useState('');
@@ -19,12 +17,20 @@ const HomePage = () => {
     async (searchItem: string): Promise<void> => {
       setLoading(true);
       setPokemons([]);
+      setPages({});
       setError('');
       try {
-        const loadedPokemons = searchItem
-          ? [await getPokemon(searchItem)]
-          : await getPokemons(page.limit, page.offset);
-        setPokemons(loadedPokemons);
+        if (searchItem) {
+          const { name, url } = await getPokemon(searchItem);
+          setPokemons([{ name, url }]);
+        } else {
+          const pokemons = await getPokemons(pageIndex);
+          setPokemons(pokemons.results);
+          setPages({
+            prev: getPageIndex(pokemons.previous),
+            next: getPageIndex(pokemons.next),
+          });
+        }
       } catch (error) {
         setError(
           error instanceof Error ? error.message : JSON.stringify(error)
@@ -33,7 +39,7 @@ const HomePage = () => {
         setLoading(false);
       }
     },
-    [page.limit, page.offset]
+    [pageIndex]
   );
 
   const handlerError = () => {
@@ -49,7 +55,12 @@ const HomePage = () => {
   return (
     <div id="home">
       <Search handleSearch={handleSearch} />
-      <Results loading={loading} error={error} pokemons={pokemons} />
+      <Results
+        loading={loading}
+        error={error}
+        pokemons={pokemons}
+        pages={pages}
+      />
       <button onClick={handlerError} className="error-button">
         Throw Exception
       </button>
