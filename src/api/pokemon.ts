@@ -8,14 +8,6 @@ export type PokemonResponse = {
 
 export const defaultLimit = 10;
 
-export const getPageIndex = (url: string | null): number | undefined => {
-  if (!url) return undefined;
-  const searchParams = new URL(url).searchParams;
-  const limit = Number(searchParams.get('limit') || defaultLimit);
-  const offset = Number(searchParams.get('offset') || 0);
-  return offset / limit;
-};
-
 export const getPokemon = async (name: string): Promise<PokemonDetails> => {
   const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
   if (!response.ok) {
