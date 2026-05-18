@@ -27,6 +27,7 @@ const HomePage = ({ page = 1, onPageChange }: HomePageProps) => {
         if (searchItem) {
           const { name, url } = await getPokemon(searchItem);
           setPokemons([{ name, url }]);
+          if (onPageChange) onPageChange(1);
         } else {
           const data = await getPokemons(page - 1);
           setPokemons(data.results);
@@ -41,7 +42,7 @@ const HomePage = ({ page = 1, onPageChange }: HomePageProps) => {
         setLoading(false);
       }
     },
-    [page]
+    [onPageChange, page]
   );
 
   const handlePageChange = useCallback(
