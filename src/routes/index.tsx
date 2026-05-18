@@ -1,4 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { useCallback } from 'react';
 import HomePage from '../pages/home';
 import PokemonDetails from '../features/details/pokemon-details';
 
@@ -19,16 +20,30 @@ export const Route = createFileRoute('/')({
   component: function Home() {
     const { page, details } = Route.useSearch();
     const navigate = Route.useNavigate();
-    const closeDetails = () => navigate({ search: { page } });
+
+    const handlePageChange = useCallback(
+      (next: number) => {
+        navigate({ search: (prev) => ({ ...prev, page: next }) });
+      },
+      [navigate]
+    );
+
+    const handleItemSelect = useCallback(
+      (detailsId: string) => {
+        navigate({ search: (prev) => ({ ...prev, details: detailsId }) });
+      },
+      [navigate]
+    );
+
+    const closeDetails = useCallback(() => {
+      navigate({ search: (prev) => ({ page: prev.page }) });
+    }, [navigate]);
+
     return (
       <HomePage
         page={page}
-        onPageChange={(next) =>
-          navigate({ search: details ? { page: next, details } : { page: next } })
-        }
-        onItemSelect={(detailsId) =>
-          navigate({ search: { page, details: detailsId } })
-        }
+        onPageChange={handlePageChange}
+        onItemSelect={handleItemSelect}
         onMainPanelClick={details ? closeDetails : undefined}
         detailsSlot={
           details ? (
