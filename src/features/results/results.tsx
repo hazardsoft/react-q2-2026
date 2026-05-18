@@ -3,14 +3,28 @@ import Loading from './loading';
 import './results.css';
 import PokemonList from './pokemon-list';
 
-export type ResultsProps = {
-  pages: { prev?: number; next?: number };
+type ResultsProps = {
   pokemons: Pokemon[];
   loading: boolean;
   error: string;
+  page: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+  onPageChange: (page: number) => void;
 };
 
-const Results = ({ pokemons, loading, error, pages }: ResultsProps) => {
+const Results = ({
+  pokemons,
+  loading,
+  error,
+  page,
+  hasPrevPage,
+  hasNextPage,
+  onPageChange,
+}: ResultsProps) => {
+  const showPagination =
+    !loading && !error && pokemons.length > 0 && (hasPrevPage || hasNextPage);
+
   return (
     <section id="results">
       <div>
@@ -22,14 +36,23 @@ const Results = ({ pokemons, loading, error, pages }: ResultsProps) => {
         )}
       </div>
 
-      {(pages.next !== undefined || pages.prev !== undefined) && (
+      {showPagination && (
         <nav>
-          <ul>
-            <a href={pages.prev ? `#${pages.prev}` : undefined}>Prev</a>
-          </ul>
-          <ul>
-            <a href={pages.next ? `#${pages.next}` : undefined}>Next</a>
-          </ul>
+          <button
+            type="button"
+            onClick={() => onPageChange(page - 1)}
+            disabled={!hasPrevPage}
+          >
+            Prev
+          </button>
+          <span>Page {page}</span>
+          <button
+            type="button"
+            onClick={() => onPageChange(page + 1)}
+            disabled={!hasNextPage}
+          >
+            Next
+          </button>
         </nav>
       )}
     </section>
