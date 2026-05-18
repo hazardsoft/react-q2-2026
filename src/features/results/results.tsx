@@ -12,6 +12,7 @@ type ResultsProps = {
   hasNextPage: boolean;
   onPageChange: (page: number) => void;
   onItemSelect?: (detailsId: string) => void;
+  onMainPanelClick?: () => void;
 };
 
 const Results = ({
@@ -23,12 +24,21 @@ const Results = ({
   hasNextPage,
   onPageChange,
   onItemSelect,
+  onMainPanelClick,
 }: ResultsProps) => {
   const showPagination =
     !loading && !error && pokemons.length > 0 && (hasPrevPage || hasNextPage);
 
+  const handlePageButton = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    next: number
+  ) => {
+    event.stopPropagation();
+    onPageChange(next);
+  };
+
   return (
-    <section id="results">
+    <section id="results" onClick={onMainPanelClick}>
       <div className="results-list">
         {loading && <Loading />}
         {error ? (
@@ -42,7 +52,7 @@ const Results = ({
         <nav>
           <button
             type="button"
-            onClick={() => onPageChange(page - 1)}
+            onClick={(e) => handlePageButton(e, page - 1)}
             disabled={!hasPrevPage}
           >
             Prev
@@ -50,7 +60,7 @@ const Results = ({
           <span>Page {page}</span>
           <button
             type="button"
-            onClick={() => onPageChange(page + 1)}
+            onClick={(e) => handlePageButton(e, page + 1)}
             disabled={!hasNextPage}
           >
             Next

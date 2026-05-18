@@ -9,6 +9,7 @@ type HomePageProps = {
   page?: number;
   onPageChange?: (page: number) => void;
   onItemSelect?: (detailsId: string) => void;
+  onMainPanelClick?: () => void;
   detailsSlot?: ReactNode;
 };
 
@@ -20,6 +21,7 @@ const HomePage = ({
   page = 1,
   onPageChange,
   onItemSelect,
+  onMainPanelClick,
   detailsSlot,
 }: HomePageProps) => {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
@@ -86,6 +88,7 @@ const HomePage = ({
           hasNextPage={hasNext}
           onPageChange={handlePageChange}
           onItemSelect={onItemSelect}
+          onMainPanelClick={onMainPanelClick}
         />
         <Details>{detailsSlot}</Details>
       </div>

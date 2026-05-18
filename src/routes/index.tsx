@@ -19,6 +19,7 @@ export const Route = createFileRoute('/')({
   component: function Home() {
     const { page, details } = Route.useSearch();
     const navigate = Route.useNavigate();
+    const closeDetails = () => navigate({ search: { page } });
     return (
       <HomePage
         page={page}
@@ -28,12 +29,13 @@ export const Route = createFileRoute('/')({
         onItemSelect={(detailsId) =>
           navigate({ search: { page, details: detailsId } })
         }
+        onMainPanelClick={details ? closeDetails : undefined}
         detailsSlot={
           details ? (
             <PokemonDetails
               key={details}
               detailsId={details}
-              onClose={() => navigate({ search: { page } })}
+              onClose={closeDetails}
             />
           ) : null
         }

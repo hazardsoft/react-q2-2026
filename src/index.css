@@ -91,3 +91,6 @@ p {
 a {
   color: var(--accent);
 }
+button {
+  cursor: pointer;
+}

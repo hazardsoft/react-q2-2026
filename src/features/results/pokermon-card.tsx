@@ -24,7 +24,14 @@ const PokermonCard = ({ name, onSelect }: PokermonCardProps) => {
   return (
     <article
       className={onSelect ? 'pokemon-card clickable' : 'pokemon-card'}
-      onClick={onSelect ? () => onSelect(name) : undefined}
+      onClick={
+        onSelect
+          ? (event) => {
+              event.stopPropagation();
+              onSelect(name);
+            }
+          : undefined
+      }
     >
       <div className="image">
         {details?.sprites.front_default && (
