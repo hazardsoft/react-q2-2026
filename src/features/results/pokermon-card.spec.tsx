@@ -11,7 +11,7 @@ vi.mock('../../api/pokemon', () => {
   };
 });
 
-const pokemonWithoutAbilities: PokemonDetails = {
+const pokemonWithoutSprite: PokemonDetails = {
   id: 1,
   name: 'bulbasaur',
   url: 'https://pokeapi.co/api/v2/pokemon/1',
@@ -22,7 +22,7 @@ const pokemonWithoutAbilities: PokemonDetails = {
 };
 
 describe('Pokemon Card: Rendering Tests', () => {
-  it('Displays name and abilities correctly', async () => {
+  it('Displays name and sprite image correctly', async () => {
     vi.mocked(getPokemon).mockReturnValueOnce(Promise.resolve(pokemon));
 
     render(<PokermonCard name={pokemon.name} />);
@@ -31,31 +31,26 @@ describe('Pokemon Card: Rendering Tests', () => {
 
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute('src', pokemon.sprites.front_default);
-    expect(await screen.findByText('Abilities:')).toBeInTheDocument();
-    expect((await screen.findAllByRole('listitem')).length).toBe(
-      pokemon.abilities.length
-    );
     expect(await screen.findByRole('heading')).toHaveTextContent(pokemon.name);
   });
 
-  it('Displays name and no abilities correctly', async () => {
+  it('Displays name without sprite image when sprite is missing', async () => {
     vi.mocked(getPokemon).mockReturnValueOnce(
-      Promise.resolve(pokemonWithoutAbilities)
+      Promise.resolve(pokemonWithoutSprite)
     );
 
-    render(<PokermonCard name={pokemonWithoutAbilities.name} />);
+    render(<PokermonCard name={pokemonWithoutSprite.name} />);
 
     await waitFor(() => {
       expect(vi.mocked(getPokemon)).toHaveBeenCalledWith(
-        pokemonWithoutAbilities.name
+        pokemonWithoutSprite.name
       );
       expect(vi.mocked(getPokemon)).toHaveReturned();
     });
 
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
-    expect(screen.queryByText('Abilities:')).not.toBeInTheDocument();
-    expect(screen.queryAllByText('listitem').length).toBe(
-      pokemonWithoutAbilities.abilities.length
+    expect(screen.getByRole('heading')).toHaveTextContent(
+      pokemonWithoutSprite.name
     );
   });
 });

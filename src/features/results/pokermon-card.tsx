@@ -5,9 +5,10 @@ import { useEffect, useState } from 'react';
 
 type PokermonCardProps = {
   name: string;
+  onSelect?: (detailsId: string) => void;
 };
 
-const PokermonCard = ({ name }: PokermonCardProps) => {
+const PokermonCard = ({ name, onSelect }: PokermonCardProps) => {
   const [details, setDetails] = useState<PokemonDetails | null>(null);
 
   const handlePokemonDetails = (name: string): void => {
@@ -21,7 +22,10 @@ const PokermonCard = ({ name }: PokermonCardProps) => {
   }, [name]);
 
   return (
-    <article className="pokemon-card">
+    <article
+      className={onSelect ? 'pokemon-card clickable' : 'pokemon-card'}
+      onClick={onSelect ? () => onSelect(name) : undefined}
+    >
       <div className="image">
         {details?.sprites.front_default && (
           <img src={details.sprites.front_default} alt={name} loading="lazy" />
@@ -29,18 +33,6 @@ const PokermonCard = ({ name }: PokermonCardProps) => {
       </div>
       <div className="details">
         <h3 className="name">{name}</h3>
-        {details && details.abilities.length > 0 && (
-          <>
-            <p className="abilities-label">Abilities:</p>
-            <ul className="abilities-list">
-              {details.abilities.map((a) => (
-                <li key={a.ability.name} className="abilities-item">
-                  {a.ability.name}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
       </div>
     </article>
   );

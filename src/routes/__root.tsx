@@ -7,7 +7,9 @@ export const Route = createRootRoute({
   component: () => (
     <>
       <div className="pages">
-        <Link to="/">Home</Link>
+        <Link to="/" search={{ page: 1 }}>
+          Home
+        </Link>
         <Link to="/about">About</Link>
       </div>
       <Outlet />

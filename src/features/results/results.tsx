@@ -11,6 +11,7 @@ type ResultsProps = {
   hasPrevPage: boolean;
   hasNextPage: boolean;
   onPageChange: (page: number) => void;
+  onItemSelect?: (detailsId: string) => void;
 };
 
 const Results = ({
@@ -21,18 +22,19 @@ const Results = ({
   hasPrevPage,
   hasNextPage,
   onPageChange,
+  onItemSelect,
 }: ResultsProps) => {
   const showPagination =
     !loading && !error && pokemons.length > 0 && (hasPrevPage || hasNextPage);
 
   return (
     <section id="results">
-      <div>
+      <div className="results-list">
         {loading && <Loading />}
         {error ? (
           <p className="error">{error}</p>
         ) : (
-          <PokemonList pokemons={pokemons} />
+          <PokemonList pokemons={pokemons} onItemSelect={onItemSelect} />
         )}
       </div>
 

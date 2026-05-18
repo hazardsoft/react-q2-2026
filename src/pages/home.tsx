@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import './home.css';
 import Search from '../features/search/search';
 import type { Pokemon } from '../api/types';
@@ -8,9 +8,20 @@ import Results from '../features/results/results';
 type HomePageProps = {
   page?: number;
   onPageChange?: (page: number) => void;
+  onItemSelect?: (detailsId: string) => void;
+  detailsSlot?: ReactNode;
 };
 
-const HomePage = ({ page = 1, onPageChange }: HomePageProps) => {
+const Details = ({ children }: { children?: ReactNode }) => {
+  return <section className="details">{children}</section>;
+};
+
+const HomePage = ({
+  page = 1,
+  onPageChange,
+  onItemSelect,
+  detailsSlot,
+}: HomePageProps) => {
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [hasPrev, setHasPrev] = useState(false);
   const [hasNext, setHasNext] = useState(false);
@@ -65,15 +76,19 @@ const HomePage = ({ page = 1, onPageChange }: HomePageProps) => {
   return (
     <div id="home">
       <Search handleSearch={handleSearch} />
-      <Results
-        loading={loading}
-        error={error}
-        pokemons={pokemons}
-        page={page}
-        hasPrevPage={hasPrev}
-        hasNextPage={hasNext}
-        onPageChange={handlePageChange}
-      />
+      <div className="home-body">
+        <Results
+          loading={loading}
+          error={error}
+          pokemons={pokemons}
+          page={page}
+          hasPrevPage={hasPrev}
+          hasNextPage={hasNext}
+          onPageChange={handlePageChange}
+          onItemSelect={onItemSelect}
+        />
+        <Details>{detailsSlot}</Details>
+      </div>
       <button onClick={handlerError} className="error-button">
         Throw Exception
       </button>

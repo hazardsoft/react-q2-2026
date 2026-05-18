@@ -6,8 +6,8 @@ import { pokemons } from '../../__tests__/data';
 
 const paginationProps = {
   page: 1,
-  hasPrev: false,
-  hasNext: false,
+  hasPrevPage: false,
+  hasNextPage: false,
   onPageChange: () => {},
 };
 
