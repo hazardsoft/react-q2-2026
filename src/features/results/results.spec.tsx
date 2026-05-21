@@ -12,16 +12,23 @@ const paginationProps = {
 };
 
 describe('Results: Rendering Tests', () => {
-  it('Shows loading state while fetching data', async () => {
+  it('Shows only the loading state while fetching data', async () => {
     render(
-      <Results pokemons={[]} loading={true} error="" {...paginationProps} />
+      <Results
+        pokemons={pokemons}
+        loading={true}
+        error=""
+        {...paginationProps}
+      />
     );
 
     expect(screen.getByTestId('spinner')).toBeInTheDocument();
     expect(screen.getByTestId('spinner')).toBeVisible();
+    expect(screen.queryAllByRole('article').length).toBe(0);
+    expect(screen.queryByText('No Pokemons')).not.toBeInTheDocument();
   });
 
-  it('Does not show loading state loading is not in progress', async () => {
+  it('Does not show loading state when loading is not in progress', async () => {
     render(
       <Results pokemons={[]} loading={false} error="" {...paginationProps} />
     );
@@ -53,11 +60,11 @@ describe('Results: Rendering Tests', () => {
 });
 
 describe('Results: Error Handling Tests', () => {
-  it('Displays error message when API call fails', async () => {
+  it('Displays only the error message when API call fails', async () => {
     const errorMessage = 'Can not load pokemons';
     render(
       <Results
-        pokemons={[]}
+        pokemons={pokemons}
         loading={false}
         error={errorMessage}
         {...paginationProps}
@@ -67,6 +74,22 @@ describe('Results: Error Handling Tests', () => {
     expect(screen.getByText(errorMessage)).toBeInTheDocument();
     expect(screen.queryByText('No Pokemons')).not.toBeInTheDocument();
     expect(screen.queryAllByRole('article').length).toBe(0);
+    expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
+  });
+
+  it('Hides the error message while loading', async () => {
+    const errorMessage = 'Can not load pokemons';
+    render(
+      <Results
+        pokemons={[]}
+        loading={true}
+        error={errorMessage}
+        {...paginationProps}
+      />
+    );
+
+    expect(screen.queryByText(errorMessage)).not.toBeInTheDocument();
+    expect(screen.getByTestId('spinner')).toBeInTheDocument();
   });
 });
 

@@ -16,7 +16,6 @@ export default mergeConfig(
           'src/__tests__/*.*',
           'src/index.tsx',
           'routeTree.gen.ts',
-          'src/routes/**'
         ],
         thresholds: {
           statements: 80,

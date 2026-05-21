@@ -41,9 +41,8 @@ const Results = ({
     <section id="results" onClick={onMainPanelClick}>
       <div className="results-list">
         {loading && <Loading />}
-        {error ? (
-          <p className="error">{error}</p>
-        ) : (
+        {!loading && error && <p className="error">{error}</p>}
+        {!loading && !error && (
           <PokemonList pokemons={pokemons} onItemSelect={onItemSelect} />
         )}
       </div>

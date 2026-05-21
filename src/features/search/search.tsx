@@ -1,30 +1,27 @@
-import { useEffect, useRef, useState, type ChangeEvent } from 'react';
+import { useRef, useState, type ChangeEvent } from 'react';
 import './search.css';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 type SearchProps = {
-  handleSearch: (searchItem: string) => void;
+  initialValue: string;
+  onSubmit: (searchItem: string) => void;
 };
 
-const Search = ({ handleSearch }: SearchProps) => {
-  const [searchItem, setSearchItem] = useLocalStorage('searchItem');
-  const [inputItem, setInputItem] = useState(searchItem);
+const Search = ({ initialValue, onSubmit }: SearchProps) => {
+  const [inputItem, setInputItem] = useState(initialValue);
+  const lastSubmittedRef = useRef(initialValue);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputItem(event.target.value);
   };
 
-  const onSearch = (): void => {
-    const trimmedInputItem = inputItem.trim();
-    if (trimmedInputItem === searchItem) return;
-    setSearchItem(trimmedInputItem);
+  const onSearch = () => {
+    const trimmed = inputItem.trim();
+    if (trimmed === lastSubmittedRef.current) return;
+    lastSubmittedRef.current = trimmed;
+    onSubmit(trimmed);
     inputRef.current?.focus();
   };
-
-  useEffect(() => {
-    handleSearch(searchItem);
-  }, [handleSearch, searchItem]);
 
   return (
     <section id="search" className="search">
