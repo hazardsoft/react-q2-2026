@@ -3,6 +3,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.css';
 import { routeTree } from './routeTree.gen.ts';
+import ErrorBoundary from './features/error/error-boundary.tsx';
 
 const router = createRouter({ routeTree });
 
@@ -14,6 +15,8 @@ declare module '@tanstack/react-router' {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ErrorBoundary fallback={<p>Something went wrong</p>}>
+      <RouterProvider router={router} />
+    </ErrorBoundary>
   </StrictMode>
 );

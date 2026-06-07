@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import './home.css';
 import Search from '../features/search/search';
-import type { Pokemon } from '../api/types';
-import { getPokemon, getPokemons } from '../api/pokemon';
+import { getPokemon, getPokemons, type PokemonResponse } from '../api/pokemon';
 import Results from '../features/results/results';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 type HomePageProps = {
   page?: number;
@@ -11,6 +11,12 @@ type HomePageProps = {
   onItemSelect?: (detailsId: string) => void;
   onMainPanelClick?: () => void;
   detailsSlot?: ReactNode;
+};
+
+const emptyPokemonData: PokemonResponse = {
+  results: [],
+  previous: null,
+  next: null,
 };
 
 const Details = ({ children }: { children?: ReactNode }) => {
@@ -24,69 +30,76 @@ const HomePage = ({
   onMainPanelClick,
   detailsSlot,
 }: HomePageProps) => {
-  const [pokemons, setPokemons] = useState<Pokemon[]>([]);
-  const [hasPrev, setHasPrev] = useState(false);
-  const [hasNext, setHasNext] = useState(false);
+  const [searchItem, setSearchItem] = useLocalStorage('searchItem');
+  const [pokemonData, setPokemonData] =
+    useState<PokemonResponse>(emptyPokemonData);
   const [loading, setLoading] = useState(false);
   const [toThrow, setToThrow] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSearch = useCallback(
-    async (searchItem: string): Promise<void> => {
+  if (toThrow) {
+    throw new Error('Throw error manually');
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const run = async () => {
       setLoading(true);
       setError('');
-      setPokemons([]);
+      setPokemonData(emptyPokemonData);
       try {
         if (searchItem) {
           const { name, url } = await getPokemon(searchItem);
-          setPokemons([{ name, url }]);
-          if (onPageChange) onPageChange(1);
+          if (!cancelled) {
+            setPokemonData({
+              results: [{ name, url }],
+              previous: null,
+              next: null,
+            });
+          }
         } else {
-          const data = await getPokemons(page - 1);
-          setPokemons(data.results);
-          setHasPrev(data.previous !== null);
-          setHasNext(data.next !== null);
+          const response = await getPokemons(page - 1);
+          if (!cancelled) setPokemonData(response);
         }
       } catch (error) {
-        setError(
-          error instanceof Error ? error.message : JSON.stringify(error)
-        );
+        if (!cancelled) {
+          setError(
+            error instanceof Error ? error.message : JSON.stringify(error)
+          );
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
-    },
-    [onPageChange, page]
-  );
+    };
 
-  const handlePageChange = useCallback(
-    (next: number) => {
-      onPageChange?.(next);
-    },
-    [onPageChange]
-  );
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [searchItem, page]);
+
+  const handleSearchSubmit = (next: string) => {
+    setSearchItem(next);
+    if (next) onPageChange?.(1);
+  };
 
   const handlerError = () => {
     setToThrow(true);
   };
 
-  useEffect(() => {
-    if (toThrow) {
-      throw new Error('Throw error manually');
-    }
-  }, [toThrow]);
-
   return (
     <div id="home">
-      <Search handleSearch={handleSearch} />
+      <Search initialValue={searchItem} onSubmit={handleSearchSubmit} />
       <div className="home-body">
         <Results
           loading={loading}
           error={error}
-          pokemons={pokemons}
+          pokemons={pokemonData.results}
           page={page}
-          hasPrevPage={hasPrev}
-          hasNextPage={hasNext}
-          onPageChange={handlePageChange}
+          hasPrevPage={pokemonData.previous !== null}
+          hasNextPage={pokemonData.next !== null}
+          onPageChange={(next) => onPageChange?.(next)}
           onItemSelect={onItemSelect}
           onMainPanelClick={onMainPanelClick}
         />
