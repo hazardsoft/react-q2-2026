@@ -1,69 +1,115 @@
-import { Component, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import './home.css';
 import Search from '../features/search/search';
-import type { Pokemon } from '../api/types';
-import { getPokemon, getPokemons } from '../api/pokemon';
+import { getPokemon, getPokemons, type PokemonResponse } from '../api/pokemon';
 import Results from '../features/results/results';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
-type State = {
-  pokemons: Pokemon[];
-  loading: boolean;
-  error: string;
-  limit: number;
-  offset: number;
-  throw: boolean;
+type HomePageProps = {
+  page?: number;
+  onPageChange?: (page: number) => void;
+  onItemSelect?: (detailsId: string) => void;
+  onMainPanelClick?: () => void;
+  detailsSlot?: ReactNode;
 };
-export default class HomePage extends Component {
-  state: State = {
-    pokemons: [],
-    loading: false,
-    error: '',
-    limit: 20,
-    offset: 0,
-    throw: false,
-  };
 
-  handleSearch = async (searchItem: string): Promise<void> => {
-    this.setState({ loading: true, error: '', pokemons: [] });
-    let pokemons: Pokemon[];
-    try {
-      if (searchItem) {
-        pokemons = [await getPokemon(searchItem)];
-      } else {
-        pokemons = await getPokemons(this.state.limit, this.state.offset);
+const emptyPokemonData: PokemonResponse = {
+  results: [],
+  previous: null,
+  next: null,
+};
+
+const Details = ({ children }: { children?: ReactNode }) => {
+  return <section className="details">{children}</section>;
+};
+
+const HomePage = ({
+  page = 1,
+  onPageChange,
+  onItemSelect,
+  onMainPanelClick,
+  detailsSlot,
+}: HomePageProps) => {
+  const [searchItem, setSearchItem] = useLocalStorage('searchItem');
+  const [pokemonData, setPokemonData] =
+    useState<PokemonResponse>(emptyPokemonData);
+  const [loading, setLoading] = useState(false);
+  const [toThrow, setToThrow] = useState(false);
+  const [error, setError] = useState('');
+
+  if (toThrow) {
+    throw new Error('Throw error manually');
+  }
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const run = async () => {
+      setLoading(true);
+      setError('');
+      setPokemonData(emptyPokemonData);
+      try {
+        if (searchItem) {
+          const { name, url } = await getPokemon(searchItem);
+          if (!cancelled) {
+            setPokemonData({
+              results: [{ name, url }],
+              previous: null,
+              next: null,
+            });
+          }
+        } else {
+          const response = await getPokemons(page - 1);
+          if (!cancelled) setPokemonData(response);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setError(
+            error instanceof Error ? error.message : JSON.stringify(error)
+          );
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      this.setState({ loading: false, pokemons });
-    } catch (error) {
-      this.setState({
-        loading: false,
-        error: error instanceof Error ? error.message : JSON.stringify(error),
-      });
-    }
+    };
+
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [searchItem, page]);
+
+  const handleSearchSubmit = (next: string) => {
+    setSearchItem(next);
+    if (next) onPageChange?.(1);
   };
 
-  handlerError = () => {
-    this.setState({ throw: true });
+  const handlerError = () => {
+    setToThrow(true);
   };
 
-  componentDidUpdate(): void {
-    if (this.state.throw) {
-      throw new Error('Throw error manually');
-    }
-  }
-
-  render(): ReactNode {
-    return (
-      <div id="home">
-        <Search handleSearch={this.handleSearch} />
+  return (
+    <div id="home">
+      <Search initialValue={searchItem} onSubmit={handleSearchSubmit} />
+      <div className="home-body">
         <Results
-          loading={this.state.loading}
-          error={this.state.error}
-          pokemons={this.state.pokemons}
+          loading={loading}
+          error={error}
+          pokemons={pokemonData.results}
+          page={page}
+          hasPrevPage={pokemonData.previous !== null}
+          hasNextPage={pokemonData.next !== null}
+          onPageChange={(next) => onPageChange?.(next)}
+          onItemSelect={onItemSelect}
+          onMainPanelClick={onMainPanelClick}
         />
-        <button onClick={this.handlerError} className="error-button">
-          Throw Exception
-        </button>
+        <Details>{detailsSlot}</Details>
       </div>
-    );
-  }
-}
+      <button onClick={handlerError} className="error-button">
+        Throw Exception
+      </button>
+    </div>
+  );
+};
+
+export default HomePage;

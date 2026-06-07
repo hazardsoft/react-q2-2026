@@ -1,3 +1,4 @@
+import type { PokemonResponse } from '../api/pokemon';
 import type { Pokemon, PokemonDetails } from '../api/types';
 
 export const pokemons: Pokemon[] = [
@@ -14,6 +15,12 @@ export const pokemons: Pokemon[] = [
     url: 'https://pokeapi.co/api/v2/pokemon/3/',
   },
 ];
+
+export const pokemonsResponse: PokemonResponse = {
+  previous: null,
+  next: '',
+  results: [...pokemons],
+};
 
 export const pokemon: PokemonDetails = {
   id: 1,

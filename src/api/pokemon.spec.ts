@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { getPokemon, getPokemons } from './pokemon';
+import { defaultLimit, getPokemon, getPokemons } from './pokemon';
 import { pokemon, pokemons } from '../__tests__/data';
 
 const mockFetchOk = (data: unknown) => {
@@ -64,26 +64,26 @@ describe('getPokemons', () => {
   it('Gets pokemons with limit/offset', async () => {
     mockFetchOk({ next: '', results: pokemons });
 
-    await getPokemons(20, 0);
+    await getPokemons();
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      'https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20'
+      `https://pokeapi.co/api/v2/pokemon/?offset=0&limit=${defaultLimit}`
     );
   });
 
   it('Returns list of pokemons', async () => {
     mockFetchOk({ results: pokemons });
 
-    const result = await getPokemons(20, 0);
+    const result = await getPokemons();
 
-    expect(result).toEqual(pokemons);
+    expect(result.results).toEqual(pokemons);
   });
 
   it('Throws when the response is not ok', async () => {
     mockFetchError();
 
-    await expect(getPokemons(20, 0)).rejects.toThrow(
-      'Could not load pokemons, offset (0), limit (20)'
+    await expect(getPokemons()).rejects.toThrow(
+      `Could not load pokemons, offset (0), limit (${defaultLimit})`
     );
   });
 });

@@ -1,9 +1,12 @@
 import type { Pokemon, PokemonDetails } from './types';
 
-type PokemonResponse = {
-  next: string;
+export type PokemonResponse = {
+  previous: string | null;
+  next: string | null;
   results: Pokemon[];
 };
+
+export const defaultLimit = 10;
 
 export const getPokemon = async (name: string): Promise<PokemonDetails> => {
   const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
@@ -15,17 +18,17 @@ export const getPokemon = async (name: string): Promise<PokemonDetails> => {
 };
 
 export const getPokemons = async (
-  limit: number,
-  offset: number
-): Promise<Pokemon[]> => {
+  pageIndex: number = 0
+): Promise<PokemonResponse> => {
+  const offset = defaultLimit * pageIndex;
+
   const response = await fetch(
-    `https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${limit}`
+    `https://pokeapi.co/api/v2/pokemon/?offset=${offset}&limit=${defaultLimit}`
   );
   if (!response.ok) {
     throw new Error(
-      `Could not load pokemons, offset (${offset}), limit (${limit})`
+      `Could not load pokemons, offset (${offset}), limit (${defaultLimit})`
     );
   }
-  const data = (await response.json()) as PokemonResponse;
-  return data.results;
+  return (await response.json()) as PokemonResponse;
 };

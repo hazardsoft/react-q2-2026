@@ -15,6 +15,7 @@ export default mergeConfig(
           'src/**/*.spec.{ts,tsx}',
           'src/__tests__/*.*',
           'src/index.tsx',
+          'routeTree.gen.ts',
         ],
         thresholds: {
           statements: 80,

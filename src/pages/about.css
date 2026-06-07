@@ -1,0 +1,11 @@
+#about {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 32px 20px 24px;
+}
+
+p {
+  text-align: left;
+}
+

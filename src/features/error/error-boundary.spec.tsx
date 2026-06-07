@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import ErrorBoundary from './error-boundary';
-import App from '../../App';
+import HomePage from '../../pages/home';
 import userEvent from '@testing-library/user-event';
 
 const fallbackMessage = 'Something went wrong';
@@ -35,7 +35,11 @@ describe('Error Boundary: Error Catching Tests', () => {
 
   it('Error Button Tests', async () => {
     const runtimeError = new Error('Throw error manually');
-    render(<App />);
+    render(
+      <ErrorBoundary fallback={<p>{fallbackMessage}</p>}>
+        <HomePage />
+      </ErrorBoundary>
+    );
 
     const user = userEvent.setup();
     await user.click(screen.getByRole('button', { name: 'Throw Exception' }));

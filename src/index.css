@@ -88,3 +88,9 @@ h2 {
 p {
   margin: 0;
 }
+a {
+  color: var(--accent);
+}
+button {
+  cursor: pointer;
+}
