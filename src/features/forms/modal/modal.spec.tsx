@@ -47,7 +47,10 @@ describe('Modal: Rendering', () => {
       </Modal>
     );
 
-    expect(screen.getByRole('dialog', { name: 'Visible' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Visible' })
+    ).toBeInTheDocument();
     expect(screen.getByText('content')).toBeInTheDocument();
   });
 
@@ -116,7 +119,7 @@ describe('Modal: Closing', () => {
       </Modal>
     );
 
-    await user.click(screen.getByRole('button', { name: 'Close' }));
+    await user.click(screen.getByRole('button', { name: '×' }));
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });
@@ -150,7 +153,7 @@ describe('Modal: Focus management', () => {
     screen.getByRole('button', { name: 'Submit' }).focus();
     await user.tab();
 
-    expect(screen.getByRole('button', { name: 'Close' })).toHaveFocus();
+    expect(screen.getByRole('button', { name: '×' })).toHaveFocus();
   });
 
   it('Traps Shift+Tab focus inside the dialog (wraps from first to last)', async () => {
@@ -158,7 +161,7 @@ describe('Modal: Focus management', () => {
     render(<ModalHarness />);
     await user.click(screen.getByRole('button', { name: 'Open' }));
 
-    screen.getByRole('button', { name: 'Close' }).focus();
+    screen.getByRole('button', { name: '×' }).focus();
     await user.tab({ shift: true });
 
     expect(screen.getByRole('button', { name: 'Submit' })).toHaveFocus();
