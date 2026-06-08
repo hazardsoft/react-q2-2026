@@ -1,21 +1,36 @@
-import type { FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import './form.css';
 import type { FormValues } from './types';
+import { ACCEPTED_IMAGE_TYPES, fileToBase64 } from './utils/image';
+import PasswordStrength from './components/password-strength';
+import CountryAutocomplete from './components/country-autocomplete';
 
 type UncontrolledFormProps = {
   onSubmit: (values: FormValues) => void;
 };
 
 const UncontrolledForm = ({ onSubmit }: UncontrolledFormProps) => {
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const [password, setPassword] = useState('');
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const imageInput = form.elements.namedItem('image');
+    const file =
+      imageInput instanceof HTMLInputElement ? imageInput.files?.[0] : undefined;
+    const image = file ? await fileToBase64(file) : '';
+
     onSubmit({
       name: String(data.get('name') ?? '').trim(),
       age: Number(data.get('age')),
       email: String(data.get('email') ?? '').trim(),
       gender: String(data.get('gender') ?? ''),
+      country: String(data.get('country') ?? '').trim(),
+      password: String(data.get('password') ?? ''),
+      confirmPassword: String(data.get('confirmPassword') ?? ''),
       acceptTerms: data.get('acceptTerms') === 'on',
+      image,
     });
   };
 
@@ -54,6 +69,34 @@ const UncontrolledForm = ({ onSubmit }: UncontrolledFormProps) => {
           </div>
         </div>
       </fieldset>
+
+      <CountryAutocomplete id="country" name="country" />
+
+      <div className="field">
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          onChange={(event) => setPassword(event.target.value)}
+        />
+        <PasswordStrength password={password} />
+      </div>
+
+      <div className="field">
+        <label htmlFor="confirmPassword">Confirm password</label>
+        <input id="confirmPassword" name="confirmPassword" type="password" />
+      </div>
+
+      <div className="field">
+        <label htmlFor="image">Profile image</label>
+        <input
+          id="image"
+          name="image"
+          type="file"
+          accept={ACCEPTED_IMAGE_TYPES.join(',')}
+        />
+      </div>
 
       <div className="checkbox-field">
         <input id="terms" name="acceptTerms" type="checkbox" />

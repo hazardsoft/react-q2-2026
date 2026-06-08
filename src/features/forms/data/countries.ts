@@ -2,6 +2,7 @@ export const COUNTRIES: string[] = [
   'Argentina',
   'Australia',
   'Austria',
+  'Belarus',
   'Belgium',
   'Brazil',
   'Bulgaria',

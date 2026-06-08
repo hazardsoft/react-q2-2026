@@ -19,11 +19,11 @@ const SubmissionCard = ({ submission, highlighted }: SubmissionCardProps) => {
     <article
       className={highlighted ? 'submission-card is-new' : 'submission-card'}
     >
-      <div className="submission-avatar">
+      <div className="submission-image">
         {image ? (
           <img src={image} alt={name} />
         ) : (
-          <span className="submission-avatar-fallback" aria-hidden="true">
+          <span className="submission-image-fallback" aria-hidden="true">
             {name.charAt(0)}
           </span>
         )}

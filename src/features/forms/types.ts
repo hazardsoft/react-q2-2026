@@ -22,5 +22,9 @@ export type FormValues = {
   age: number;
   email: string;
   gender: string;
+  country: string;
+  password: string;
+  confirmPassword: string;
   acceptTerms: boolean;
+  image: string;
 };

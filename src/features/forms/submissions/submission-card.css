@@ -10,7 +10,7 @@
   box-shadow: var(--shadow);
 }
 
-.submission-avatar {
+.submission-image {
   flex-shrink: 0;
   width: 72px;
   height: 72px;
@@ -22,13 +22,13 @@
   border-radius: 10px;
 }
 
-.submission-avatar img {
+.submission-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.submission-avatar-fallback {
+.submission-image-fallback {
   font-size: 32px;
   font-weight: 500;
   text-transform: uppercase;
@@ -42,22 +42,26 @@
 
 .submission-head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
   margin-bottom: 8px;
 }
 
 .submission-name {
+  flex: 1;
+  min-width: 0;
   margin: 0;
   color: var(--text-h);
   text-transform: capitalize;
+  overflow-wrap: anywhere;
 }
 
 .submission-source {
   flex-shrink: 0;
   padding: 2px 8px;
   font-size: 12px;
+  white-space: nowrap;
   color: var(--accent);
   background: var(--accent-bg);
   border: 1px solid var(--accent-border);

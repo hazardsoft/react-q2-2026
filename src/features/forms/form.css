@@ -37,6 +37,17 @@
   outline-offset: 1px;
 }
 
+.form input[type='file'] {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+}
+
 .radio-group {
   display: flex;
   flex-direction: column;
