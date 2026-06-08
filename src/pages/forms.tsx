@@ -2,6 +2,8 @@ import { useState } from 'react';
 import './forms.css';
 import Modal from '../features/forms/modal/modal';
 import SubmissionsList from '../features/forms/submissions/submissions-list';
+import UncontrolledForm from '../features/forms/uncontrolled-form';
+import RhfForm from '../features/forms/rhf-form';
 
 type FormKind = 'uncontrolled' | 'rhf';
 
@@ -36,7 +38,10 @@ const FormsPage = () => {
         onClose={closeModal}
         title={openForm ? FORM_TITLES[openForm] : ''}
       >
-        <p>The {openForm ? FORM_TITLES[openForm] : ''} fields go here.</p>
+        {openForm === 'uncontrolled' && (
+          <UncontrolledForm onSubmit={closeModal} />
+        )}
+        {openForm === 'rhf' && <RhfForm onSubmit={closeModal} />}
       </Modal>
 
       <SubmissionsList />

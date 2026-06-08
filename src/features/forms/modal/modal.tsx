@@ -20,7 +20,12 @@ const FOCUSABLE_SELECTOR = [
 
 const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   const dialogRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
   const titleId = useId();
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -31,21 +36,23 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
         : null;
 
     const dialog = dialogRef.current;
-    dialog?.focus();
 
-    const getFocusable = (): HTMLElement[] =>
-      dialog
-        ? Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
+    const getFocusable = (root: ParentNode | null): HTMLElement[] =>
+      root
+        ? Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
         : [];
+
+    const body = dialog?.querySelector('.modal-body') ?? null;
+    (getFocusable(body)[0] ?? dialog)?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (event.key !== 'Tab') return;
 
-      const items = getFocusable();
+      const items = getFocusable(dialog);
       if (items.length === 0) {
         event.preventDefault();
         return;
@@ -70,7 +77,7 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
       document.removeEventListener('keydown', handleKeyDown);
       trigger?.focus();
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

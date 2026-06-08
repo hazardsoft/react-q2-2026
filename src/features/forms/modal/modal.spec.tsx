@@ -126,13 +126,13 @@ describe('Modal: Closing', () => {
 });
 
 describe('Modal: Focus management', () => {
-  it('Moves focus into the dialog when opened', async () => {
+  it('Moves focus to the first field when opened', async () => {
     const { user } = setup();
     render(<ModalHarness />);
 
     await user.click(screen.getByRole('button', { name: 'Open' }));
 
-    expect(screen.getByRole('dialog')).toHaveFocus();
+    expect(screen.getByLabelText('Field')).toHaveFocus();
   });
 
   it('Returns focus to the trigger when closed', async () => {
@@ -165,5 +165,26 @@ describe('Modal: Focus management', () => {
     await user.tab({ shift: true });
 
     expect(screen.getByRole('button', { name: 'Submit' })).toHaveFocus();
+  });
+
+  it('keeps focus inside the dialog when tabbing through fields and a radio group', async () => {
+    const { user } = setup();
+    render(
+      <Modal isOpen onClose={vi.fn()} title="Radio form">
+        <label htmlFor="t1">Text</label>
+        <input id="t1" type="text" />
+        <input id="r1" type="radio" name="grp" value="a" />
+        <label htmlFor="r1">A</label>
+        <input id="r2" type="radio" name="grp" value="b" />
+        <label htmlFor="r2">B</label>
+        <button type="button">Go</button>
+      </Modal>
+    );
+
+    const dialog = screen.getByRole('dialog');
+    for (let i = 0; i < 8; i++) {
+      await user.tab();
+      expect(dialog.contains(document.activeElement)).toBe(true);
+    }
   });
 });

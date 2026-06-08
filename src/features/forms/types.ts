@@ -1,6 +1,6 @@
 export type FormSource = 'uncontrolled' | 'rhf';
 
-export type Gender = 'male' | 'female' | 'other';
+export type Gender = 'male' | 'female';
 
 export type Submission = {
   id: string;
@@ -16,3 +16,11 @@ export type Submission = {
 };
 
 export type SubmissionInput = Omit<Submission, 'id' | 'createdAt'>;
+
+export type FormValues = {
+  name: string;
+  age: number;
+  email: string;
+  gender: string;
+  acceptTerms: boolean;
+};
