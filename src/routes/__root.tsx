@@ -9,6 +9,7 @@ export const Route = createRootRoute({
         <Link to="/" search={{ page: 1 }}>
           Home
         </Link>
+        <Link to="/forms">Forms</Link>
         <Link to="/about">About</Link>
       </div>
       <Outlet />
