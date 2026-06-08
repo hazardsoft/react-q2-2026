@@ -23,6 +23,18 @@ describe('FormsPage', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
+  it('opens the React Hook Form in the modal', async () => {
+    const user = userEvent.setup();
+    render(<FormsPage />);
+
+    await user.click(screen.getByRole('button', { name: 'React Hook Form' }));
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'React Hook Form' })
+    ).toBeInTheDocument();
+  });
+
   it('keeps the modal open and stores nothing when the form is invalid', async () => {
     const user = userEvent.setup();
     render(<FormsPage />);
@@ -62,5 +74,29 @@ describe('FormsPage', () => {
     // Reopening the form shows a fresh, empty field (reset on success).
     await user.click(screen.getByRole('button', { name: 'Uncontrolled Form' }));
     expect(screen.getByLabelText('Name')).toHaveValue('');
+  });
+
+  it('stores a React Hook Form submission tagged with its source', async () => {
+    const user = userEvent.setup();
+    render(<FormsPage />);
+    const file = new File(['img'], 'avatar.png', { type: 'image/png' });
+
+    await user.click(screen.getByRole('button', { name: 'React Hook Form' }));
+    await user.type(screen.getByLabelText('Name'), 'Grace');
+    await user.type(screen.getByLabelText('Age'), '40');
+    await user.type(screen.getByLabelText('Email'), 'grace@example.com');
+    await user.click(screen.getByLabelText('Female'));
+    await user.type(screen.getByLabelText('Country'), 'Australia');
+    await user.type(screen.getByLabelText('Password'), 'Passw0rd!');
+    await user.type(screen.getByLabelText('Confirm password'), 'Passw0rd!');
+    await user.upload(screen.getByLabelText('Profile image'), file);
+    await user.click(screen.getByLabelText(/terms and conditions/i));
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
+
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    );
+    expect(screen.getByRole('heading', { name: 'Grace' })).toBeInTheDocument();
+    expect(useFormsStore.getState().submissions[0].source).toBe('rhf');
   });
 });
