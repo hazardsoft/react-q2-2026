@@ -1,5 +1,5 @@
-import { render, screen, within } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { act, render, screen, within } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { COUNTRIES } from '../data/countries';
 import { useFormsStore } from '../store/forms-store';
 import type { SubmissionInput } from '../types';
@@ -56,5 +56,24 @@ describe('SubmissionsList', () => {
     expect(screen.getByText('grace@example.com')).toBeInTheDocument();
     expect(screen.getByText('Australia')).toBeInTheDocument();
     expect(screen.getByText('React Hook Form')).toBeInTheDocument();
+  });
+
+  it('highlights the newest submission, then clears it after a few seconds', () => {
+    vi.useFakeTimers();
+    try {
+      render(<SubmissionsList />);
+
+      act(() => {
+        useFormsStore.getState().addSubmission(baseInput);
+      });
+      expect(screen.getByRole('article').className).toContain('is-new');
+
+      act(() => {
+        vi.advanceTimersByTime(3000);
+      });
+      expect(screen.getByRole('article').className).not.toContain('is-new');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

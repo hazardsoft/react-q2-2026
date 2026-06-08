@@ -58,5 +58,9 @@ describe('FormsPage', () => {
     expect(screen.getByRole('heading', { name: 'Ada' })).toBeInTheDocument();
     expect(screen.getByText('Australia')).toBeInTheDocument();
     expect(useFormsStore.getState().submissions).toHaveLength(1);
+
+    // Reopening the form shows a fresh, empty field (reset on success).
+    await user.click(screen.getByRole('button', { name: 'Uncontrolled Form' }));
+    expect(screen.getByLabelText('Name')).toHaveValue('');
   });
 });
