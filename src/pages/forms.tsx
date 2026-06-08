@@ -5,7 +5,7 @@ import SubmissionsList from '../features/forms/submissions/submissions-list';
 import UncontrolledForm from '../features/forms/uncontrolled-form';
 import RhfForm from '../features/forms/rhf-form';
 import { useFormsStore } from '../features/forms/store/forms-store';
-import type { FormValues, Gender } from '../features/forms/types';
+import type { FormValues } from '../features/forms/types';
 
 type FormKind = 'uncontrolled' | 'rhf';
 
@@ -26,7 +26,7 @@ const FormsPage = () => {
       name: values.name,
       age: values.age,
       email: values.email,
-      gender: values.gender as Gender,
+      gender: values.gender,
       country: values.country,
       acceptedTerms: values.acceptTerms,
       image: values.image,

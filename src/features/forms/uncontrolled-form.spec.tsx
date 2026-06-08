@@ -78,17 +78,19 @@ describe('UncontrolledForm', () => {
     expect(values.image).toMatch(/^data:image\/png;base64,/);
   });
 
-  it('reports an unchecked Terms checkbox as false', async () => {
+  it('validates on submit and does not call onSubmit when invalid', async () => {
     const onSubmit = vi.fn();
     const user = renderForm(onSubmit);
 
-    await user.type(screen.getByLabelText('Name'), 'Grace');
     await user.click(screen.getByRole('button', { name: 'Submit' }));
 
-    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
-    expect(onSubmit.mock.calls[0][0]).toMatchObject({
-      name: 'Grace',
-      acceptTerms: false,
-    });
+    expect(onSubmit).not.toHaveBeenCalled();
+    expect(screen.getByText('Name is required')).toBeInTheDocument();
+  });
+
+  it('does not disable the submit button (validates only on submit)', () => {
+    renderForm(vi.fn());
+
+    expect(screen.getByRole('button', { name: 'Submit' })).toBeEnabled();
   });
 });

@@ -15,10 +15,12 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
     "@tanstack/react-router": "^1.170.4",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-hook-form": "^7.78.0",
+    "zod": "^4.4.3",
     "zustand": "^5.0.14"
   },
   "devDependencies": {

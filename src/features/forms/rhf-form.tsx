@@ -1,26 +1,36 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import './form.css';
 import type { FormValues } from './types';
+import { createFormSchema, type SchemaValues } from './schema/form-schema';
 import { ACCEPTED_IMAGE_TYPES, fileToBase64 } from './utils/image';
+import { selectCountries, useFormsStore } from './store/forms-store';
 import PasswordStrength from './components/password-strength';
 import CountryAutocomplete from './components/country-autocomplete';
-
-type RhfFields = Omit<FormValues, 'image'> & { image: FileList };
+import FieldError from './components/field-error';
 
 type RhfFormProps = {
   onSubmit: (values: FormValues) => void;
 };
 
 const RhfForm = ({ onSubmit }: RhfFormProps) => {
-  const { register, handleSubmit } = useForm<RhfFields>();
+  const countries = useFormsStore(selectCountries);
+  const schema = useMemo(() => createFormSchema(countries), [countries]);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<SchemaValues>({
+    resolver: zodResolver(schema),
+    mode: 'onChange',
+  });
   const [password, setPassword] = useState('');
   const passwordField = register('password');
 
-  const submit = handleSubmit(async (fields) => {
-    const file = fields.image?.[0];
-    const image = file ? await fileToBase64(file) : '';
-    onSubmit({ ...fields, image });
+  const submit = handleSubmit(async (values) => {
+    const image = await fileToBase64(values.image[0]);
+    onSubmit({ ...values, image });
   });
 
   return (
@@ -28,6 +38,7 @@ const RhfForm = ({ onSubmit }: RhfFormProps) => {
       <div className="field">
         <label htmlFor="rhf-name">Name</label>
         <input id="rhf-name" type="text" {...register('name')} />
+        <FieldError message={errors.name?.message} />
       </div>
 
       <div className="field">
@@ -38,11 +49,13 @@ const RhfForm = ({ onSubmit }: RhfFormProps) => {
           min="0"
           {...register('age', { valueAsNumber: true })}
         />
+        <FieldError message={errors.age?.message} />
       </div>
 
       <div className="field">
         <label htmlFor="rhf-email">Email</label>
         <input id="rhf-email" type="email" {...register('email')} />
+        <FieldError message={errors.email?.message} />
       </div>
 
       <fieldset className="field radio-group">
@@ -67,9 +80,14 @@ const RhfForm = ({ onSubmit }: RhfFormProps) => {
             <label htmlFor="rhf-gender-female">Female</label>
           </div>
         </div>
+        <FieldError message={errors.gender?.message} />
       </fieldset>
 
-      <CountryAutocomplete id="rhf-country" registration={register('country')} />
+      <CountryAutocomplete
+        id="rhf-country"
+        registration={register('country')}
+        error={errors.country?.message}
+      />
 
       <div className="field">
         <label htmlFor="rhf-password">Password</label>
@@ -83,6 +101,7 @@ const RhfForm = ({ onSubmit }: RhfFormProps) => {
           }}
         />
         <PasswordStrength password={password} />
+        <FieldError message={errors.password?.message} />
       </div>
 
       <div className="field">
@@ -92,6 +111,7 @@ const RhfForm = ({ onSubmit }: RhfFormProps) => {
           type="password"
           {...register('confirmPassword')}
         />
+        <FieldError message={errors.confirmPassword?.message} />
       </div>
 
       <div className="field">
@@ -102,15 +122,19 @@ const RhfForm = ({ onSubmit }: RhfFormProps) => {
           accept={ACCEPTED_IMAGE_TYPES.join(',')}
           {...register('image')}
         />
+        <FieldError message={errors.image?.message} />
       </div>
 
       <div className="checkbox-field">
         <input id="rhf-terms" type="checkbox" {...register('acceptTerms')} />
         <label htmlFor="rhf-terms">I accept the Terms and Conditions</label>
       </div>
+      <FieldError message={errors.acceptTerms?.message} />
 
       <div className="form-actions">
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={!isValid}>
+          Submit
+        </button>
       </div>
     </form>
   );

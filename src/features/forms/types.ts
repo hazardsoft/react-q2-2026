@@ -21,7 +21,7 @@ export type FormValues = {
   name: string;
   age: number;
   email: string;
-  gender: string;
+  gender: Gender;
   country: string;
   password: string;
   confirmPassword: string;

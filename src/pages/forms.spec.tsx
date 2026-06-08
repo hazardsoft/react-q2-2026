@@ -23,9 +23,21 @@ describe('FormsPage', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
-  it('stores a submission, closes the modal, and shows it as a card', async () => {
+  it('keeps the modal open and stores nothing when the form is invalid', async () => {
     const user = userEvent.setup();
     render(<FormsPage />);
+
+    await user.click(screen.getByRole('button', { name: 'Uncontrolled Form' }));
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(useFormsStore.getState().submissions).toHaveLength(0);
+  });
+
+  it('stores a valid submission, closes the modal, and shows it as a card', async () => {
+    const user = userEvent.setup();
+    render(<FormsPage />);
+    const file = new File(['img'], 'avatar.png', { type: 'image/png' });
 
     await user.click(screen.getByRole('button', { name: 'Uncontrolled Form' }));
     await user.type(screen.getByLabelText('Name'), 'Ada');
@@ -33,6 +45,10 @@ describe('FormsPage', () => {
     await user.type(screen.getByLabelText('Email'), 'ada@example.com');
     await user.click(screen.getByLabelText('Female'));
     await user.type(screen.getByLabelText('Country'), 'Australia');
+    await user.type(screen.getByLabelText('Password'), 'Passw0rd!');
+    await user.type(screen.getByLabelText('Confirm password'), 'Passw0rd!');
+    await user.upload(screen.getByLabelText('Profile image'), file);
+    await user.click(screen.getByLabelText(/terms and conditions/i));
     await user.click(screen.getByRole('button', { name: 'Submit' }));
 
     await waitFor(() =>

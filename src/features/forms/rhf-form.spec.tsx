@@ -68,4 +68,20 @@ describe('RhfForm', () => {
     expect(values).toMatchObject(formData);
     expect(values.image).toMatch(/^data:image\/png;base64,/);
   });
+
+  it('disables the submit button while the form is invalid', () => {
+    renderForm(vi.fn());
+
+    expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
+  });
+
+  it('shows a live validation error for an invalid field', async () => {
+    const user = renderForm(vi.fn());
+
+    await user.type(screen.getByLabelText('Name'), 'ada');
+
+    expect(
+      await screen.findByText('Name must start with an uppercase letter')
+    ).toBeInTheDocument();
+  });
 });

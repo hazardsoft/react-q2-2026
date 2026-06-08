@@ -1,16 +1,19 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import { selectCountries, useFormsStore } from '../store/forms-store';
+import FieldError from './field-error';
 
 type CountryAutocompleteProps = {
   id: string;
   name?: string;
   registration?: UseFormRegisterReturn;
+  error?: string;
 };
 
 const CountryAutocomplete = ({
   id,
   name,
   registration,
+  error,
 }: CountryAutocompleteProps) => {
   const countries = useFormsStore(selectCountries);
   const listId = `${id}-options`;
@@ -31,6 +34,7 @@ const CountryAutocomplete = ({
           <option key={country} value={country} />
         ))}
       </datalist>
+      <FieldError message={error} />
     </div>
   );
 };
