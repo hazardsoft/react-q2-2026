@@ -9,7 +9,3 @@
     height: 40px;
   }
 }
-
-.spinner[data-loading='false'] {
-  display: none;
-}

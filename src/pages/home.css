@@ -28,6 +28,30 @@ section {
   }
 }
 
+.home-body {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 16px;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+.home-body > #results {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.details {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.details:empty {
+  display: none;
+}
+
 .error-button {
   align-self: flex-end;
 }
