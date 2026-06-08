@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './forms.css';
 import Modal from '../features/forms/modal/modal';
+import SubmissionsList from '../features/forms/submissions/submissions-list';
 
 type FormKind = 'uncontrolled' | 'rhf';
 
@@ -37,6 +38,8 @@ const FormsPage = () => {
       >
         <p>The {openForm ? FORM_TITLES[openForm] : ''} fields go here.</p>
       </Modal>
+
+      <SubmissionsList />
     </div>
   );
 };
