@@ -3,16 +3,19 @@ import { userEvent } from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ReactNode } from 'react';
 
-const { mockUseSearch, mockNavigate } = vi.hoisted(() => ({
-  mockUseSearch: vi.fn(),
-  mockNavigate: vi.fn(),
+const { mockPush, state } = vi.hoisted(() => ({
+  mockPush: vi.fn(),
+  state: { search: new URLSearchParams() },
 }));
 
-vi.mock('@tanstack/react-router', () => ({
-  getRouteApi: () => ({
-    useSearch: mockUseSearch,
-    useNavigate: () => mockNavigate,
-  }),
+const setSearch = (init: string) => {
+  state.search = new URLSearchParams(init);
+};
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: mockPush }),
+  usePathname: () => '/',
+  useSearchParams: () => state.search,
 }));
 
 vi.mock('./home', () => ({
@@ -63,20 +66,28 @@ import HomeRoute from './home-route';
 
 describe('HomeRoute: Rendering Tests', () => {
   beforeEach(() => {
-    mockNavigate.mockReset();
-    mockUseSearch.mockReset();
+    mockPush.mockReset();
+    setSearch('');
   });
 
   it('Passes page from search params to HomePage', () => {
-    mockUseSearch.mockReturnValue({ page: 3 });
+    setSearch('page=3');
 
     render(<HomeRoute />);
 
     expect(screen.getByTestId('page')).toHaveTextContent('3');
   });
 
+  it('Defaults page to 1 when missing or invalid', () => {
+    setSearch('page=not-a-number');
+
+    render(<HomeRoute />);
+
+    expect(screen.getByTestId('page')).toHaveTextContent('1');
+  });
+
   it('Does not render PokemonDetails when details search param is absent', () => {
-    mockUseSearch.mockReturnValue({ page: 1 });
+    setSearch('page=1');
 
     render(<HomeRoute />);
 
@@ -84,7 +95,7 @@ describe('HomeRoute: Rendering Tests', () => {
   });
 
   it('Renders PokemonDetails when details search param is present', () => {
-    mockUseSearch.mockReturnValue({ page: 1, details: 'bulbasaur' });
+    setSearch('page=1&details=bulbasaur');
 
     render(<HomeRoute />);
 
@@ -93,7 +104,7 @@ describe('HomeRoute: Rendering Tests', () => {
   });
 
   it('Disables onMainPanelClick when details are absent', () => {
-    mockUseSearch.mockReturnValue({ page: 1 });
+    setSearch('page=1');
 
     render(<HomeRoute />);
 
@@ -101,7 +112,7 @@ describe('HomeRoute: Rendering Tests', () => {
   });
 
   it('Enables onMainPanelClick when details are present', () => {
-    mockUseSearch.mockReturnValue({ page: 1, details: 'bulbasaur' });
+    setSearch('page=1&details=bulbasaur');
 
     render(<HomeRoute />);
 
@@ -111,58 +122,55 @@ describe('HomeRoute: Rendering Tests', () => {
 
 describe('HomeRoute: Navigation Tests', () => {
   beforeEach(() => {
-    mockNavigate.mockReset();
-    mockUseSearch.mockReset();
+    mockPush.mockReset();
+    setSearch('');
   });
 
-  it('Navigates with updated page while preserving other params on page change', async () => {
-    mockUseSearch.mockReturnValue({ page: 1, details: 'bulbasaur' });
+  it('Navigates with updated page while preserving details on page change', async () => {
+    setSearch('page=1&details=bulbasaur');
     const user = userEvent.setup();
 
     render(<HomeRoute />);
     await user.click(screen.getByText('change-page'));
 
-    expect(mockNavigate).toHaveBeenCalledTimes(1);
-    const search = mockNavigate.mock.calls[0][0].search;
-    expect(search({ page: 1, details: 'bulbasaur' })).toEqual({
-      page: 5,
-      details: 'bulbasaur',
+    expect(mockPush).toHaveBeenCalledTimes(1);
+    expect(mockPush).toHaveBeenCalledWith('/?page=5&details=bulbasaur', {
+      scroll: false,
     });
   });
 
   it('Navigates with details set while preserving page on item select', async () => {
-    mockUseSearch.mockReturnValue({ page: 2 });
+    setSearch('page=2');
     const user = userEvent.setup();
 
     render(<HomeRoute />);
     await user.click(screen.getByText('select-item'));
 
-    expect(mockNavigate).toHaveBeenCalledTimes(1);
-    const search = mockNavigate.mock.calls[0][0].search;
-    expect(search({ page: 2 })).toEqual({ page: 2, details: 'pikachu' });
+    expect(mockPush).toHaveBeenCalledTimes(1);
+    expect(mockPush).toHaveBeenCalledWith('/?page=2&details=pikachu', {
+      scroll: false,
+    });
   });
 
   it('Navigates to clear details but keep page when closing details', async () => {
-    mockUseSearch.mockReturnValue({ page: 4, details: 'bulbasaur' });
+    setSearch('page=4&details=bulbasaur');
     const user = userEvent.setup();
 
     render(<HomeRoute />);
     await user.click(screen.getByText('close-details'));
 
-    expect(mockNavigate).toHaveBeenCalledTimes(1);
-    const search = mockNavigate.mock.calls[0][0].search;
-    expect(search({ page: 4, details: 'bulbasaur' })).toEqual({ page: 4 });
+    expect(mockPush).toHaveBeenCalledTimes(1);
+    expect(mockPush).toHaveBeenCalledWith('/?page=4', { scroll: false });
   });
 
   it('Navigates to clear details when clicking the main panel', async () => {
-    mockUseSearch.mockReturnValue({ page: 2, details: 'bulbasaur' });
+    setSearch('page=2&details=bulbasaur');
     const user = userEvent.setup();
 
     render(<HomeRoute />);
     await user.click(screen.getByText('main-panel-click'));
 
-    expect(mockNavigate).toHaveBeenCalledTimes(1);
-    const search = mockNavigate.mock.calls[0][0].search;
-    expect(search({ page: 2, details: 'bulbasaur' })).toEqual({ page: 2 });
+    expect(mockPush).toHaveBeenCalledTimes(1);
+    expect(mockPush).toHaveBeenCalledWith('/?page=2', { scroll: false });
   });
 });

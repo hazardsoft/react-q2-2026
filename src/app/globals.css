@@ -44,7 +44,7 @@
   }
 }
 
-#root {
+.app-shell {
   width: 1126px;
   max-width: 100%;
   margin: 0 auto;
@@ -93,4 +93,20 @@ a {
 }
 button {
   cursor: pointer;
+}
+
+.pages {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  column-gap: 1em;
+  padding-top: 1em;
+}
+
+.error-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  padding: 32px 20px 24px;
 }

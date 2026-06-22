@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import Link from 'next/link';
 import './not-found.css';
 
 const NotFoundPage = () => {
@@ -6,9 +6,7 @@ const NotFoundPage = () => {
     <div id="not-found">
       <h1>404</h1>
       <p>This page is not what you&apos;re looking for:)</p>
-      <Link to="/" search={{ page: 1 }}>
-        Get me home
-      </Link>
+      <Link href="/?page=1">Get me home</Link>
     </div>
   );
 };
