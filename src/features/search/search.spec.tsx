@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithIntl } from '../../__tests__/render';
 import { userEvent, type UserEvent } from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import Search from './search';
@@ -9,7 +10,7 @@ const prepareComponent = (
   initialValue = ''
 ): { user: UserEvent; onSubmit: ReturnType<typeof vi.fn> } => {
   const onSubmit = vi.fn();
-  render(<Search initialValue={initialValue} onSubmit={onSubmit} />);
+  renderWithIntl(<Search initialValue={initialValue} onSubmit={onSubmit} />);
   return {
     user: userEvent.setup(),
     onSubmit,

@@ -1,4 +1,5 @@
 import { useRef, useState, type ChangeEvent } from 'react';
+import { useTranslations } from 'next-intl';
 import './search.css';
 
 type SearchProps = {
@@ -7,6 +8,7 @@ type SearchProps = {
 };
 
 const Search = ({ initialValue, onSubmit }: SearchProps) => {
+  const t = useTranslations('Search');
   const [inputItem, setInputItem] = useState(initialValue);
   const lastSubmittedRef = useRef(initialValue);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -28,12 +30,12 @@ const Search = ({ initialValue, onSubmit }: SearchProps) => {
       <input
         id="name"
         type="search"
-        placeholder="Pokemon's name"
+        placeholder={t('placeholder')}
         ref={inputRef}
         value={inputItem}
         onChange={onChange}
       ></input>
-      <button onClick={onSearch}>Search</button>
+      <button onClick={onSearch}>{t('submit')}</button>
     </section>
   );
 };

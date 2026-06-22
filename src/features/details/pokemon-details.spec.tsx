@@ -1,6 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
+import { renderWithIntl } from '../../__tests__/render';
 import PokemonDetails from './pokemon-details';
 import { getPokemon } from '../../api/pokemon';
 import { pokemon } from '../../__tests__/data';
@@ -26,7 +27,9 @@ describe('Pokemon Details: Rendering Tests', () => {
   it('Shows loading spinner while fetching details', () => {
     vi.mocked(getPokemon).mockReturnValueOnce(new Promise(() => {}));
 
-    render(<PokemonDetails detailsId={pokemon.name} onClose={() => {}} />);
+    renderWithIntl(
+      <PokemonDetails detailsId={pokemon.name} onClose={() => {}} />
+    );
 
     expect(screen.getByTestId('spinner')).toBeInTheDocument();
   });
@@ -34,9 +37,13 @@ describe('Pokemon Details: Rendering Tests', () => {
   it('Renders pokemon name, sprite and abilities after fetch resolves', async () => {
     vi.mocked(getPokemon).mockResolvedValueOnce(pokemon);
 
-    render(<PokemonDetails detailsId={pokemon.name} onClose={() => {}} />);
+    renderWithIntl(
+      <PokemonDetails detailsId={pokemon.name} onClose={() => {}} />
+    );
 
-    expect(await screen.findByRole('heading', { name: pokemon.name })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: pokemon.name })
+    ).toBeInTheDocument();
 
     const img = screen.getByRole('img');
     expect(img).toHaveAttribute('src', pokemon.sprites.front_default);
@@ -51,11 +58,8 @@ describe('Pokemon Details: Rendering Tests', () => {
   it('Does not render image or abilities list when sprite and abilities are absent', async () => {
     vi.mocked(getPokemon).mockResolvedValueOnce(pokemonWithoutSprite);
 
-    render(
-      <PokemonDetails
-        detailsId={pokemonWithoutSprite.name}
-        onClose={() => {}}
-      />
+    renderWithIntl(
+      <PokemonDetails detailsId={pokemonWithoutSprite.name} onClose={() => {}} />
     );
 
     expect(
@@ -71,10 +75,14 @@ describe('Pokemon Details: Error Handling Tests', () => {
     const errorMessage = 'Could not load pokemon (bulbasaur)';
     vi.mocked(getPokemon).mockRejectedValueOnce(new Error(errorMessage));
 
-    render(<PokemonDetails detailsId={pokemon.name} onClose={() => {}} />);
+    renderWithIntl(
+      <PokemonDetails detailsId={pokemon.name} onClose={() => {}} />
+    );
 
     expect(await screen.findByText(errorMessage)).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: pokemon.name })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: pokemon.name })
+    ).not.toBeInTheDocument();
   });
 });
 
@@ -84,7 +92,7 @@ describe('Pokemon Details: User Interaction Tests', () => {
     const onClose = vi.fn();
     const user = userEvent.setup();
 
-    render(<PokemonDetails detailsId={pokemon.name} onClose={onClose} />);
+    renderWithIntl(<PokemonDetails detailsId={pokemon.name} onClose={onClose} />);
 
     await user.click(screen.getByRole('button', { name: '×' }));
 
@@ -94,7 +102,7 @@ describe('Pokemon Details: User Interaction Tests', () => {
   it('Refetches details when detailsId changes', async () => {
     vi.mocked(getPokemon).mockResolvedValue(pokemon);
 
-    const { rerender } = render(
+    const { rerender } = renderWithIntl(
       <PokemonDetails detailsId="bulbasaur" onClose={() => {}} />
     );
 

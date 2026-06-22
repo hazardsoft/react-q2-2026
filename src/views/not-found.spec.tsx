@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithIntl } from '../__tests__/render';
 import { describe, expect, it, vi } from 'vitest';
 import type { ReactNode } from 'react';
 
@@ -12,13 +13,13 @@ import NotFoundPage from './not-found';
 
 describe('Not Found: Rendering Tests', () => {
   it('Renders 404 heading', () => {
-    render(<NotFoundPage />);
+    renderWithIntl(<NotFoundPage />);
 
     expect(screen.getByRole('heading', { name: '404' })).toBeInTheDocument();
   });
 
   it('Renders the not-found description text', () => {
-    render(<NotFoundPage />);
+    renderWithIntl(<NotFoundPage />);
 
     expect(
       screen.getByText(/This page is not what you're looking for/i)
@@ -26,7 +27,7 @@ describe('Not Found: Rendering Tests', () => {
   });
 
   it('Renders a link back to home', () => {
-    render(<NotFoundPage />);
+    renderWithIntl(<NotFoundPage />);
 
     const link = screen.getByRole('link', { name: /Get me home/i });
     expect(link).toBeInTheDocument();

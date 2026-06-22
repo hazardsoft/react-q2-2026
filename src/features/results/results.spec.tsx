@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithIntl } from '../../__tests__/render';
 import { userEvent } from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import Results from './results';
@@ -13,7 +14,7 @@ const paginationProps = {
 
 describe('Results: Rendering Tests', () => {
   it('Shows only the loading state while fetching data', async () => {
-    render(
+    renderWithIntl(
       <Results
         pokemons={pokemons}
         loading={true}
@@ -29,7 +30,7 @@ describe('Results: Rendering Tests', () => {
   });
 
   it('Does not show loading state when loading is not in progress', async () => {
-    render(
+    renderWithIntl(
       <Results pokemons={[]} loading={false} error="" {...paginationProps} />
     );
 
@@ -37,7 +38,7 @@ describe('Results: Rendering Tests', () => {
   });
 
   it('Renders the pokemon list when there is no error and data is provided', async () => {
-    render(
+    renderWithIntl(
       <Results
         pokemons={pokemons}
         loading={false}
@@ -51,7 +52,7 @@ describe('Results: Rendering Tests', () => {
   });
 
   it('Shows "No Pokemons" when there is no error and the list is empty', async () => {
-    render(
+    renderWithIntl(
       <Results pokemons={[]} loading={false} error="" {...paginationProps} />
     );
 
@@ -62,7 +63,7 @@ describe('Results: Rendering Tests', () => {
 describe('Results: Error Handling Tests', () => {
   it('Displays only the error message when API call fails', async () => {
     const errorMessage = 'Can not load pokemons';
-    render(
+    renderWithIntl(
       <Results
         pokemons={pokemons}
         loading={false}
@@ -79,7 +80,7 @@ describe('Results: Error Handling Tests', () => {
 
   it('Hides the error message while loading', async () => {
     const errorMessage = 'Can not load pokemons';
-    render(
+    renderWithIntl(
       <Results
         pokemons={[]}
         loading={true}
@@ -95,7 +96,7 @@ describe('Results: Error Handling Tests', () => {
 
 describe('Results: Pagination Tests', () => {
   it('Does not render pagination while loading', () => {
-    render(
+    renderWithIntl(
       <Results
         pokemons={[]}
         loading={true}
@@ -111,7 +112,7 @@ describe('Results: Pagination Tests', () => {
   });
 
   it('Does not render pagination when list is empty', () => {
-    render(
+    renderWithIntl(
       <Results
         pokemons={[]}
         loading={false}
@@ -129,7 +130,7 @@ describe('Results: Pagination Tests', () => {
   it('Renders pagination with current page and Prev/Next when items are loaded', () => {
     const pageIndex = 2;
 
-    render(
+    renderWithIntl(
       <Results
         pokemons={pokemons}
         loading={false}
@@ -148,7 +149,7 @@ describe('Results: Pagination Tests', () => {
   });
 
   it('Disables Prev on the first page', () => {
-    render(
+    renderWithIntl(
       <Results
         pokemons={pokemons}
         loading={false}
@@ -167,7 +168,7 @@ describe('Results: Pagination Tests', () => {
     const onPageChange = vi.fn();
     const pageIndex = 3;
     const user = userEvent.setup();
-    render(
+    renderWithIntl(
       <Results
         pokemons={pokemons}
         loading={false}

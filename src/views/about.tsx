@@ -1,10 +1,13 @@
+import { useTranslations } from 'next-intl';
 import './about.css';
 
 const AboutPage = () => {
+  const t = useTranslations('About');
+
   return (
     <div id="about">
       <p>
-        <strong>Author:</strong> Henadzi Shutko
+        <strong>{t('author')}</strong> Henadzi Shutko
       </p>
       <p>
         <a
@@ -12,7 +15,7 @@ const AboutPage = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          GitHub profile
+          {t('github')}
         </a>
       </p>
       <p>
@@ -21,7 +24,7 @@ const AboutPage = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          RS School React course
+          {t('course')}
         </a>
       </p>
     </div>

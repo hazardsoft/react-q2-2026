@@ -1,4 +1,5 @@
 import type { Pokemon } from '../../api/types';
+import { useTranslations } from 'next-intl';
 import Loading from './loading';
 import './results.css';
 import PokemonList from './pokemon-list';
@@ -26,6 +27,8 @@ const Results = ({
   onItemSelect,
   onMainPanelClick,
 }: ResultsProps) => {
+  const t = useTranslations('Results');
+
   const showPagination =
     !loading && !error && pokemons.length > 0 && (hasPrevPage || hasNextPage);
 
@@ -54,15 +57,15 @@ const Results = ({
             onClick={(e) => handlePageButton(e, page - 1)}
             disabled={!hasPrevPage}
           >
-            Prev
+            {t('prev')}
           </button>
-          <span>Page {page}</span>
+          <span>{t('page', { page })}</span>
           <button
             type="button"
             onClick={(e) => handlePageButton(e, page + 1)}
             disabled={!hasNextPage}
           >
-            Next
+            {t('next')}
           </button>
         </nav>
       )}

@@ -1,4 +1,5 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import { renderWithIntl } from '../__tests__/render';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import HomePage from './home';
 import { getPokemons, getPokemon } from '../api/pokemon';
@@ -17,7 +18,7 @@ const clear = () => {
 
 describe('Home: Rendering Tests', () => {
   it("Renders button with label 'Throw Exception'", async () => {
-    render(<HomePage />);
+    renderWithIntl(<HomePage />);
 
     expect(
       screen.getByRole('button', { name: /Throw Exception/i })
@@ -40,7 +41,7 @@ describe('Home: Integration Tests', () => {
     localStorage.setItem('searchItem', pokemon.name);
     vi.mocked(getPokemon).mockReturnValue(Promise.resolve(pokemon));
 
-    render(<HomePage />);
+    renderWithIntl(<HomePage />);
 
     await waitFor(() => {
       expect(vi.mocked(getPokemon)).toHaveBeenCalledWith(pokemon.name);
@@ -52,7 +53,7 @@ describe('Home: Integration Tests', () => {
     vi.mocked(getPokemons).mockReturnValue(Promise.resolve(pokemonsResponse));
     vi.mocked(getPokemon).mockReturnValue(Promise.resolve(pokemon));
 
-    render(<HomePage />);
+    renderWithIntl(<HomePage />);
 
     await waitFor(() => {
       expect(vi.mocked(getPokemons)).toHaveBeenCalled();
@@ -66,7 +67,7 @@ describe('Home: Integration Tests', () => {
       throw new Error(errorMessage);
     });
 
-    render(<HomePage />);
+    renderWithIntl(<HomePage />);
 
     await waitFor(() => {
       expect(vi.mocked(getPokemons)).toThrow();

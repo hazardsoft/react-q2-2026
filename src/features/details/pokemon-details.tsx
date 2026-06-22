@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import './pokemon-details.css';
 import type { PokemonDetails as Details } from '../../api/types';
 import { getPokemon } from '../../api/pokemon';
@@ -10,6 +11,7 @@ type PokemonDetailsProps = {
 };
 
 const PokemonDetails = ({ detailsId, onClose }: PokemonDetailsProps) => {
+  const t = useTranslations('Details');
   const [details, setDetails] = useState<Details | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -52,7 +54,7 @@ const PokemonDetails = ({ detailsId, onClose }: PokemonDetailsProps) => {
           )}
           {details.abilities.length > 0 && (
             <>
-              <h3 className="abilities-label">Abilities:</h3>
+              <h3 className="abilities-label">{t('abilities')}</h3>
               <ul className="abilities-list">
                 {details.abilities.map((a) => (
                   <li key={a.ability.name} className="abilities-item">

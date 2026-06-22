@@ -1,16 +1,17 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithIntl } from '../__tests__/render';
 import { describe, expect, it } from 'vitest';
 import AboutPage from './about';
 
 describe('About: Rendering Tests', () => {
   it('Renders the author name', () => {
-    render(<AboutPage />);
+    renderWithIntl(<AboutPage />);
 
     expect(screen.getByText(/Henadzi Shutko/i)).toBeInTheDocument();
   });
 
   it('Renders a link to the GitHub profile', () => {
-    render(<AboutPage />);
+    renderWithIntl(<AboutPage />);
 
     const link = screen.getByRole('link', { name: /GitHub profile/i });
     expect(link).toBeInTheDocument();
@@ -18,7 +19,7 @@ describe('About: Rendering Tests', () => {
   });
 
   it('Renders a link to the RS School React course', () => {
-    render(<AboutPage />);
+    renderWithIntl(<AboutPage />);
 
     const link = screen.getByRole('link', { name: /RS School React course/i });
     expect(link).toBeInTheDocument();

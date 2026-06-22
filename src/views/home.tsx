@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 import './home.css';
 import Search from '../features/search/search';
 import { getPokemon, getPokemons, type PokemonResponse } from '../api/pokemon';
@@ -30,6 +31,7 @@ const HomePage = ({
   onMainPanelClick,
   detailsSlot,
 }: HomePageProps) => {
+  const t = useTranslations('Home');
   const [searchItem, setSearchItem] = useLocalStorage('searchItem');
   const [pokemonData, setPokemonData] =
     useState<PokemonResponse>(emptyPokemonData);
@@ -106,7 +108,7 @@ const HomePage = ({
         <Details>{detailsSlot}</Details>
       </div>
       <button onClick={handlerError} className="error-button">
-        Throw Exception
+        {t('throwException')}
       </button>
     </div>
   );

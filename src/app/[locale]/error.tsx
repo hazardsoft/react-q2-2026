@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 type ErrorProps = {
   error: Error & { digest?: string };
@@ -8,15 +9,17 @@ type ErrorProps = {
 };
 
 const Error = ({ error, reset }: ErrorProps) => {
+  const t = useTranslations('Error');
+
   useEffect(() => {
     console.error('Caught error with error boundary', error);
   }, [error]);
 
   return (
     <div className="error-page">
-      <p>Something went wrong</p>
+      <p>{t('title')}</p>
       <button type="button" onClick={reset}>
-        Try again
+        {t('retry')}
       </button>
     </div>
   );

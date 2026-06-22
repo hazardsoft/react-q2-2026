@@ -1,0 +1,40 @@
+{
+  "Nav": {
+    "home": "Главная",
+    "about": "О проекте"
+  },
+  "LocaleSwitcher": {
+    "label": "Сменить язык",
+    "en": "English",
+    "ru": "Русский"
+  },
+  "Search": {
+    "placeholder": "Имя покемона",
+    "submit": "Поиск"
+  },
+  "Results": {
+    "prev": "Назад",
+    "next": "Вперёд",
+    "page": "Страница {page}",
+    "empty": "Покемоны не найдены"
+  },
+  "Home": {
+    "throwException": "Вызвать исключение"
+  },
+  "Details": {
+    "abilities": "Способности:"
+  },
+  "About": {
+    "author": "Автор:",
+    "github": "Профиль GitHub",
+    "course": "Курс RS School React"
+  },
+  "NotFound": {
+    "description": "Это не та страница, которую ты ищешь :)",
+    "cta": "На главную"
+  },
+  "Error": {
+    "title": "Что-то пошло не так",
+    "retry": "Попробовать снова"
+  }
+}

@@ -1,12 +1,15 @@
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import './not-found.css';
 
 const NotFoundPage = () => {
+  const t = useTranslations('NotFound');
+
   return (
     <div id="not-found">
       <h1>404</h1>
-      <p>This page is not what you&apos;re looking for:)</p>
-      <Link href="/?page=1">Get me home</Link>
+      <p>{t('description')}</p>
+      <Link href="/?page=1">{t('cta')}</Link>
     </div>
   );
 };
