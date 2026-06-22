@@ -2,6 +2,7 @@ import type { PokemonDetails } from '../../api/types';
 import { getPokemon } from '../../api/pokemon';
 import './pokermon-card.css';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 type PokermonCardProps = {
   name: string;
@@ -35,7 +36,12 @@ const PokermonCard = ({ name, onSelect }: PokermonCardProps) => {
     >
       <div className="image">
         {details?.sprites.front_default && (
-          <img src={details.sprites.front_default} alt={name} loading="lazy" />
+          <Image
+            src={details.sprites.front_default}
+            alt={name}
+            fill
+            sizes="72px"
+          />
         )}
       </div>
       <div className="details">

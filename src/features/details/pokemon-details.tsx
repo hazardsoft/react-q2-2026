@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import './pokemon-details.css';
 import type { PokemonDetails as Details } from '../../api/types';
@@ -46,10 +47,11 @@ const PokemonDetails = ({ detailsId, onClose }: PokemonDetailsProps) => {
         <>
           <h2 className="name">{details.name}</h2>
           {details.sprites.front_default && (
-            <img
+            <Image
               src={details.sprites.front_default}
               alt={details.name}
-              loading="lazy"
+              width={160}
+              height={160}
             />
           )}
           {details.abilities.length > 0 && (
