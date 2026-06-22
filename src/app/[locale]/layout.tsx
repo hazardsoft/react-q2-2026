@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
-import LocaleSwitcher from '@/features/locale-switcher/locale-switcher';
+import Navigation from '@/features/navigation/navigation';
 import '../globals.css';
 
 export const metadata: Metadata = {
@@ -30,19 +29,13 @@ const LocaleLayout = async ({ children, params }: Props) => {
   // Enable static rendering
   setRequestLocale(locale);
 
-  const t = await getTranslations('Nav');
-
   return (
     <html lang={locale}>
       <body>
         <NextIntlClientProvider>
           <div className="app-shell">
-            <nav className="pages">
-              <Link href="/?page=1">{t('home')}</Link>
-              <Link href="/about">{t('about')}</Link>
-              <LocaleSwitcher />
-            </nav>
-            {children}
+            <Navigation />
+            <main className="app-main">{children}</main>
           </div>
         </NextIntlClientProvider>
       </body>
