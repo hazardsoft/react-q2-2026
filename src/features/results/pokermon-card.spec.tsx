@@ -1,15 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import type { ReactNode } from 'react';
+import { renderWithIntl } from '../../__tests__/render';
 import PokermonCard from './pokermon-card';
-import { getPokemon } from '../../api/pokemon';
-import type { PokemonDetails } from '../../api/types';
-import { pokemon } from '../../__tests__/data';
-
-vi.mock('../../api/pokemon', () => {
-  return {
-    getPokemon: vi.fn(),
-  };
-});
 
 vi.mock('next/image', () => ({
   default: ({ src, alt }: { src: string; alt: string }) => (
@@ -18,46 +11,51 @@ vi.mock('next/image', () => ({
   ),
 }));
 
-const pokemonWithoutSprite: PokemonDetails = {
-  id: 1,
-  name: 'bulbasaur',
-  url: 'https://pokeapi.co/api/v2/pokemon/1',
-  abilities: [],
-  sprites: {
-    front_default: null,
-  },
-};
+vi.mock('@/i18n/navigation', () => ({
+  Link: ({
+    href,
+    className,
+    children,
+  }: {
+    href: unknown;
+    className?: string;
+    children: ReactNode;
+  }) => (
+    <a className={className} href={JSON.stringify(href)}>
+      {children}
+    </a>
+  ),
+}));
 
-describe('Pokemon Card: Rendering Tests', () => {
-  it('Displays name and sprite image correctly', async () => {
-    vi.mocked(getPokemon).mockReturnValueOnce(Promise.resolve(pokemon));
+describe('PokermonCard', () => {
+  it('renders the name and sprite image', () => {
+    renderWithIntl(
+      <PokermonCard name="pikachu" sprite="http://x/25.png" page={1} />
+    );
 
-    render(<PokermonCard name={pokemon.name} />);
-
-    const img = await screen.findByRole('img');
-
-    expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute('src', pokemon.sprites.front_default);
-    expect(await screen.findByRole('heading')).toHaveTextContent(pokemon.name);
+    expect(
+      screen.getByRole('heading', { name: 'pikachu' })
+    ).toBeInTheDocument();
+    const img = screen.getByRole('img');
+    expect(img).toHaveAttribute('src', 'http://x/25.png');
+    expect(img).toHaveAttribute('alt', 'pikachu');
   });
 
-  it('Displays name without sprite image when sprite is missing', async () => {
-    vi.mocked(getPokemon).mockReturnValueOnce(
-      Promise.resolve(pokemonWithoutSprite)
+  it('links to the details for the pokemon, preserving page and query', () => {
+    renderWithIntl(
+      <PokermonCard name="pikachu" sprite={null} page={2} query="pik" />
     );
 
-    render(<PokermonCard name={pokemonWithoutSprite.name} />);
-
-    await waitFor(() => {
-      expect(vi.mocked(getPokemon)).toHaveBeenCalledWith(
-        pokemonWithoutSprite.name
-      );
-      expect(vi.mocked(getPokemon)).toHaveReturned();
+    const href = JSON.parse(screen.getByRole('link').getAttribute('href')!);
+    expect(href).toEqual({
+      pathname: '/',
+      query: { page: 2, query: 'pik', details: 'pikachu' },
     });
+  });
+
+  it('omits the image when the sprite is missing', () => {
+    renderWithIntl(<PokermonCard name="pikachu" sprite={null} page={1} />);
 
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
-    expect(screen.getByRole('heading')).toHaveTextContent(
-      pokemonWithoutSprite.name
-    );
   });
 });

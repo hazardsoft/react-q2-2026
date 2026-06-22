@@ -1,85 +1,55 @@
 import { screen } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderWithIntl } from '../../__tests__/render';
-import { userEvent, type UserEvent } from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
 import Search from './search';
 
-const searchItem = 'bulbasaur';
+const { mockPush } = vi.hoisted(() => ({ mockPush: vi.fn() }));
 
-const prepareComponent = (
-  initialValue = ''
-): { user: UserEvent; onSubmit: ReturnType<typeof vi.fn> } => {
-  const onSubmit = vi.fn();
-  renderWithIntl(<Search initialValue={initialValue} onSubmit={onSubmit} />);
-  return {
-    user: userEvent.setup(),
-    onSubmit,
-  };
-};
+vi.mock('@/i18n/navigation', () => ({
+  useRouter: () => ({ push: mockPush }),
+}));
 
-describe('Search: Rendering Tests', () => {
-  it('Renders search input and search button', () => {
-    prepareComponent();
+describe('Search', () => {
+  beforeEach(() => {
+    mockPush.mockReset();
+  });
+
+  it('renders the search input and button', () => {
+    renderWithIntl(<Search initialValue="" />);
 
     expect(screen.getByRole('searchbox')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Search' })).toBeInTheDocument();
   });
 
-  it('Search value is empty when initialValue is empty', () => {
-    prepareComponent();
+  it('initializes the input with initialValue', () => {
+    renderWithIntl(<Search initialValue="bulbasaur" />);
 
-    expect(screen.getByRole('searchbox')).toHaveValue('');
+    expect(screen.getByRole('searchbox')).toHaveValue('bulbasaur');
   });
 
-  it('Initializes input with initialValue when provided', () => {
-    prepareComponent(searchItem);
+  it('navigates to page 1 with the trimmed query on submit', async () => {
+    const user = userEvent.setup();
+    renderWithIntl(<Search initialValue="" />);
 
-    expect(screen.getByRole('searchbox')).toHaveValue(searchItem);
-  });
-});
-
-describe('Search: User Interaction Tests', () => {
-  it('Updates input value when user types', async () => {
-    const { user } = prepareComponent();
-
-    await user.type(screen.getByRole('searchbox'), searchItem);
-
-    expect(screen.getByRole('searchbox')).toHaveValue(searchItem);
-  });
-
-  it('Does not call onSubmit on mount', () => {
-    const { onSubmit } = prepareComponent();
-
-    expect(onSubmit).not.toHaveBeenCalled();
-  });
-
-  it('Trims whitespace before calling onSubmit', async () => {
-    const { user, onSubmit } = prepareComponent();
-
-    await user.type(screen.getByRole('searchbox'), ` ${searchItem} `);
+    await user.type(screen.getByRole('searchbox'), '  pikachu  ');
     await user.click(screen.getByRole('button', { name: 'Search' }));
 
-    expect(onSubmit).toHaveBeenCalledTimes(1);
-    expect(onSubmit).toHaveBeenCalledWith(searchItem);
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/',
+      query: { page: 1, query: 'pikachu' },
+    });
   });
 
-  it('Does not re-trigger onSubmit with the same value', async () => {
-    const { user, onSubmit } = prepareComponent();
-
-    await user.type(screen.getByRole('searchbox'), searchItem);
-    await user.click(screen.getByRole('button', { name: 'Search' }));
-    await user.click(screen.getByRole('button', { name: 'Search' }));
-    await user.click(screen.getByRole('button', { name: 'Search' }));
-
-    expect(onSubmit).toHaveBeenCalledTimes(1);
-    expect(onSubmit).toHaveBeenLastCalledWith(searchItem);
-  });
-
-  it('Does not re-trigger onSubmit when value matches initialValue', async () => {
-    const { user, onSubmit } = prepareComponent(searchItem);
+  it('navigates without a query when the input is empty', async () => {
+    const user = userEvent.setup();
+    renderWithIntl(<Search initialValue="" />);
 
     await user.click(screen.getByRole('button', { name: 'Search' }));
 
-    expect(onSubmit).not.toHaveBeenCalled();
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/',
+      query: { page: 1 },
+    });
   });
 });

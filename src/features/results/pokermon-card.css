@@ -5,6 +5,8 @@
   background: #fff;
   border-radius: 12px;
   align-items: center;
+  text-decoration: none;
+  color: inherit;
 }
 
 .pokemon-card.clickable {

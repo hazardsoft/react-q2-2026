@@ -1,53 +1,28 @@
-import type { PokemonDetails } from '../../api/types';
-import { getPokemon } from '../../api/pokemon';
-import './pokermon-card.css';
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { Link } from '@/i18n/navigation';
+import { homeHref } from './home-href';
+import './pokermon-card.css';
 
 type PokermonCardProps = {
   name: string;
-  onSelect?: (detailsId: string) => void;
+  sprite: string | null;
+  page: number;
+  query?: string;
 };
 
-const PokermonCard = ({ name, onSelect }: PokermonCardProps) => {
-  const [details, setDetails] = useState<PokemonDetails | null>(null);
-
-  const handlePokemonDetails = (name: string): void => {
-    getPokemon(name).then((details) => {
-      setDetails(details);
-    });
-  };
-
-  useEffect(() => {
-    handlePokemonDetails(name);
-  }, [name]);
-
+const PokermonCard = ({ name, sprite, page, query }: PokermonCardProps) => {
   return (
-    <article
-      className={onSelect ? 'pokemon-card clickable' : 'pokemon-card'}
-      onClick={
-        onSelect
-          ? (event) => {
-              event.stopPropagation();
-              onSelect(name);
-            }
-          : undefined
-      }
+    <Link
+      className="pokemon-card clickable"
+      href={homeHref({ page, query, details: name })}
     >
       <div className="image">
-        {details?.sprites.front_default && (
-          <Image
-            src={details.sprites.front_default}
-            alt={name}
-            fill
-            sizes="72px"
-          />
-        )}
+        {sprite && <Image src={sprite} alt={name} fill sizes="72px" />}
       </div>
       <div className="details">
         <h3 className="name">{name}</h3>
       </div>
-    </article>
+    </Link>
   );
 };
 

@@ -23,7 +23,8 @@
     "exportCsv": "Экспорт CSV"
   },
   "Details": {
-    "abilities": "Способности:"
+    "abilities": "Способности:",
+    "close": "Закрыть"
   },
   "About": {
     "author": "Автор:",

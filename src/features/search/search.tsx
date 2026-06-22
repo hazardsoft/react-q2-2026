@@ -1,16 +1,19 @@
+'use client';
+
 import { useRef, useState, type ChangeEvent } from 'react';
 import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
+import { homeHref } from '../results/home-href';
 import './search.css';
 
 type SearchProps = {
   initialValue: string;
-  onSubmit: (searchItem: string) => void;
 };
 
-const Search = ({ initialValue, onSubmit }: SearchProps) => {
+const Search = ({ initialValue }: SearchProps) => {
   const t = useTranslations('Search');
+  const router = useRouter();
   const [inputItem, setInputItem] = useState(initialValue);
-  const lastSubmittedRef = useRef(initialValue);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -19,9 +22,8 @@ const Search = ({ initialValue, onSubmit }: SearchProps) => {
 
   const onSearch = () => {
     const trimmed = inputItem.trim();
-    if (trimmed === lastSubmittedRef.current) return;
-    lastSubmittedRef.current = trimmed;
-    onSubmit(trimmed);
+    // A new search resets to the first page and clears any open details.
+    router.push(homeHref({ page: 1, query: trimmed || undefined }));
     inputRef.current?.focus();
   };
 
