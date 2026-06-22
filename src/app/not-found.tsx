@@ -4,6 +4,8 @@ import '../views/not-found.css';
 
 // Fallback 404 for requests that are not matched by the next-intl middleware
 // (and therefore have no locale). Localized routes use app/[locale]/not-found.tsx.
+// This link uses next/link (not createNavigation) on purpose: there is no locale
+// context here, and linking to "/" lets the middleware resolve the locale.
 const GlobalNotFound = () => {
   return (
     <html lang="en">

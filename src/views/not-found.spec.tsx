@@ -3,8 +3,8 @@ import { renderWithIntl } from '../__tests__/render';
 import { describe, expect, it, vi } from 'vitest';
 import type { ReactNode } from 'react';
 
-vi.mock('next/link', () => ({
-  default: ({ href, children }: { href: string; children: ReactNode }) => (
+vi.mock('@/i18n/navigation', () => ({
+  Link: ({ href, children }: { href: string; children: ReactNode }) => (
     <a href={href}>{children}</a>
   ),
 }));
