@@ -52,6 +52,13 @@ section {
   display: none;
 }
 
+.home-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .error-button {
   align-self: flex-end;
 }

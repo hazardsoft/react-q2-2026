@@ -19,7 +19,8 @@
     "empty": "Покемоны не найдены"
   },
   "Home": {
-    "throwException": "Вызвать исключение"
+    "throwException": "Вызвать исключение",
+    "exportCsv": "Экспорт CSV"
   },
   "Details": {
     "abilities": "Способности:"

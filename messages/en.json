@@ -19,7 +19,8 @@
     "empty": "No Pokemons"
   },
   "Home": {
-    "throwException": "Throw Exception"
+    "throwException": "Throw Exception",
+    "exportCsv": "Export CSV"
   },
   "Details": {
     "abilities": "Abilities:"

@@ -5,6 +5,7 @@ import Search from '../features/search/search';
 import { getPokemon, getPokemons, type PokemonResponse } from '../api/pokemon';
 import Results from '../features/results/results';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import ExportCsv from '../features/export/export-csv';
 
 type HomePageProps = {
   page?: number;
@@ -107,9 +108,12 @@ const HomePage = ({
         />
         <Details>{detailsSlot}</Details>
       </div>
-      <button onClick={handlerError} className="error-button">
-        {t('throwException')}
-      </button>
+      <div className="home-controls">
+        <ExportCsv page={page} query={searchItem || undefined} />
+        <button onClick={handlerError} className="error-button">
+          {t('throwException')}
+        </button>
+      </div>
     </div>
   );
 };
