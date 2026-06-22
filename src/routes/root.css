@@ -1,7 +1,0 @@
-.pages {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    column-gap: 1em;
-    padding-top: 1em;
-}

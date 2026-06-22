@@ -32,3 +32,10 @@ export const getPokemons = async (
   }
   return (await response.json()) as PokemonResponse;
 };
+
+export const getSpriteUrl = (pokemonUrl: string): string | null => {
+  const id = pokemonUrl.split('/').filter(Boolean).pop();
+  return id
+    ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+    : null;
+};

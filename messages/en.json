@@ -1,0 +1,44 @@
+{
+  "Nav": {
+    "home": "Home",
+    "about": "About"
+  },
+  "LocaleSwitcher": {
+    "label": "Change language",
+    "en": "English",
+    "ru": "Русский"
+  },
+  "Search": {
+    "placeholder": "Pokemon's name",
+    "submit": "Search"
+  },
+  "Results": {
+    "prev": "Prev",
+    "next": "Next",
+    "page": "Page {page}",
+    "empty": "No Pokemons"
+  },
+  "Home": {
+    "throwException": "Throw Exception",
+    "exportCsv": "Export CSV"
+  },
+  "Details": {
+    "abilities": "Abilities:",
+    "close": "Close"
+  },
+  "About": {
+    "author": "Author:",
+    "github": "GitHub profile",
+    "course": "RS School React course",
+    "metaTitle": "About",
+    "metaDescription": "Learn about this project and its author, Henadzi Shutko."
+  },
+  "NotFound": {
+    "description": "This page is not what you're looking for:)",
+    "cta": "Get me home"
+  },
+  "Error": {
+    "title": "Something went wrong",
+    "retry": "Try again"
+  }
+}

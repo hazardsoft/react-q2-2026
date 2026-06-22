@@ -24,7 +24,18 @@ nav {
   margin-bottom: 10px;
 }
 
-button[disabled] {
+.page-link {
+  color: var(--accent);
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 5px;
+}
+
+.page-link:hover {
+  background: var(--accent-bg);
+}
+
+.page-link.disabled {
   opacity: 0.5;
-  cursor: not-allowed;
+  pointer-events: none;
 }

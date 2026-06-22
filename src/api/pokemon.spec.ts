@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { defaultLimit, getPokemon, getPokemons } from './pokemon';
+import {
+  defaultLimit,
+  getPokemon,
+  getPokemons,
+  getSpriteUrl,
+} from './pokemon';
 import { pokemon, pokemons } from '../__tests__/data';
 
 const mockFetchOk = (data: unknown) => {
@@ -84,6 +89,14 @@ describe('getPokemons', () => {
 
     await expect(getPokemons()).rejects.toThrow(
       `Could not load pokemons, offset (0), limit (${defaultLimit})`
+    );
+  });
+});
+
+describe('getSpriteUrl', () => {
+  it('builds the sprite URL from a pokemon list url', () => {
+    expect(getSpriteUrl('https://pokeapi.co/api/v2/pokemon/25/')).toBe(
+      'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png'
     );
   });
 });

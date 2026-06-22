@@ -5,6 +5,11 @@
   padding: 5px 10px;
 }
 
+.search-form {
+  display: contents;
+  width: 100%;
+}
+
 input {
   font-size: 18px;
   flex-grow: 1;
