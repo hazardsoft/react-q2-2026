@@ -27,7 +27,9 @@
   "About": {
     "author": "Автор:",
     "github": "Профиль GitHub",
-    "course": "Курс RS School React"
+    "course": "Курс RS School React",
+    "metaTitle": "О проекте",
+    "metaDescription": "Информация о проекте и его авторе."
   },
   "NotFound": {
     "description": "Это не та страница, которую ты ищешь :)",

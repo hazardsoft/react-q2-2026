@@ -27,7 +27,9 @@
   "About": {
     "author": "Author:",
     "github": "GitHub profile",
-    "course": "RS School React course"
+    "course": "RS School React course",
+    "metaTitle": "About",
+    "metaDescription": "Learn about this project and its author, Henadzi Shutko."
   },
   "NotFound": {
     "description": "This page is not what you're looking for:)",
