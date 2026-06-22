@@ -8,6 +8,7 @@ import ThrowButton from '@/features/error/throw-button';
 import { homeHref } from '@/features/results/home-href';
 import ResultsSection from './results-section';
 import DetailsPanel from './details-panel';
+import { searchAction } from './actions';
 import './home.css';
 
 type Props = {
@@ -37,7 +38,10 @@ const Page = async ({ params, searchParams }: Props) => {
 
   return (
     <div id="home">
-      <Search initialValue={query ?? ''} />
+      <Search
+        initialValue={query ?? ''}
+        searchAction={searchAction.bind(null, locale)}
+      />
       <div className="home-body">
         <ResultsPanel closeHref={details ? closeHref : undefined}>
           <Suspense key={`${page}:${query ?? ''}`} fallback={<Loading />}>
